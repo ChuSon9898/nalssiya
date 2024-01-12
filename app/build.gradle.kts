@@ -54,4 +54,7 @@ dependencies {
 
     // Coil
     implementation("io.coil-kt:coil:2.4.0")
+
+    implementation("androidx.activity:activity-ktx:1.8.2")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
 }
