@@ -1,17 +1,17 @@
-package com.example.weather_app
+package com.example.weather_app.ui.bookmark
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.weather_app.databinding.FavoriteActivityBinding
+import com.example.weather_app.databinding.BookmarkActivityBinding
 
-class FavoriteActivity : AppCompatActivity() {
+class BookmarkActivity : AppCompatActivity() {
 
-    lateinit var binding: FavoriteActivityBinding
+    lateinit var binding: BookmarkActivityBinding
 
     private val listAdapter by lazy {
-        FavoriteListAdapter()
+        BookmarkListAdapter()
     }
 
     private val favoriteViewModel by lazy {
@@ -20,7 +20,7 @@ class FavoriteActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = FavoriteActivityBinding.inflate(layoutInflater)
+        binding = BookmarkActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         initView()
@@ -30,12 +30,12 @@ class FavoriteActivity : AppCompatActivity() {
     private fun initView() = with(binding) {
 
         favoriteRv.adapter = listAdapter
-        favoriteRv.layoutManager = LinearLayoutManager(this@FavoriteActivity)
+        favoriteRv.layoutManager = LinearLayoutManager(this@BookmarkActivity)
 
     }
 
     private fun initModel() = with(favoriteViewModel) {
-        favoriteViewModel.favoriteList.observe(this@FavoriteActivity){ favoriteList ->
+        favoriteViewModel.favoriteList.observe(this@BookmarkActivity){ favoriteList ->
             listAdapter.submitList(favoriteList)
         }
     }

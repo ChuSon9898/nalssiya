@@ -1,36 +1,35 @@
-package com.example.weather_app
+package com.example.weather_app.ui.bookmark
 
-import android.annotation.SuppressLint
-import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.weather_app.R
+import com.example.weather_app.data.model.BookmarkDataModel
 import com.example.weather_app.databinding.FavoriteRvItemBinding
 
-class FavoriteListAdapter :
-    ListAdapter<FavoriteModel, FavoriteListAdapter.ViewHolder>(
-        object : DiffUtil.ItemCallback<FavoriteModel>() {
+class BookmarkListAdapter :
+    ListAdapter<BookmarkDataModel, BookmarkListAdapter.ViewHolder>(
+        object : DiffUtil.ItemCallback<BookmarkDataModel>() {
             override fun areItemsTheSame(
-                oldFavoriteItem: FavoriteModel,
-                newFavoriteItem: FavoriteModel
+                oldFavoriteItem: BookmarkDataModel,
+                newFavoriteItem: BookmarkDataModel
             ): Boolean {
                 return oldFavoriteItem.id == newFavoriteItem.id
             }
 
             override fun areContentsTheSame(
-                oldFavoriteItem: FavoriteModel,
-                newFavoriteItem: FavoriteModel
+                oldFavoriteItem: BookmarkDataModel,
+                newFavoriteItem: BookmarkDataModel
             ): Boolean {
                 return oldFavoriteItem == newFavoriteItem
             }
         }) {
 
     interface OnItemClickListener {
-        fun onItemClick(item: FavoriteModel, position:Int)
+        fun onItemClick(item: BookmarkDataModel, position:Int)
     }
 
     private var onItemClickListener: OnItemClickListener? = null
@@ -53,13 +52,17 @@ class FavoriteListAdapter :
     inner class ViewHolder(
         private val binding: FavoriteRvItemBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(favoriteItem: FavoriteModel) {
+        fun bind(favoriteItem: BookmarkDataModel) {
             with(binding) {
 
                 if (favoriteItem.id == 0) {
-                    cardViewLayout.setBackgroundColor(ContextCompat.getColor(root.context, R.color.light_blue))
+                    cardViewLayout.setBackgroundColor(ContextCompat.getColor(root.context,
+                        R.color.light_blue
+                    ))
                 } else {
-                    cardViewLayout.setBackgroundColor(ContextCompat.getColor(root.context, R.color.dark_blue))
+                    cardViewLayout.setBackgroundColor(ContextCompat.getColor(root.context,
+                        R.color.dark_blue
+                    ))
                 }
 
                 favoriteTvLocation.text = favoriteItem.location

@@ -1,21 +1,25 @@
 package com.example.weather_app.ui.home
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weather_app.databinding.HomeActivityBinding
+import com.example.weather_app.ui.bookmark.BookmarkListAdapter
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: HomeActivityBinding
 
-    private val viewModel: HomeViewModel by lazy {
-        ViewModelProvider(this)[HomeViewModel::class.java]
+    private val viewModel: HomeViewModel by viewModels {
+        HomeViewModelFactory()
     }
 
-    private val hourlyAdapter = HourlyListAdapter()
-    private val dailyAdapter = DailyListAdapter()
+    private val hourlyAdapter by lazy {
+        HourlyListAdapter()
+    }
+    private val dailyAdapter by lazy {
+        DailyListAdapter()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,11 +39,11 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() = with(viewModel) {
-        hourlyList.observe(this@HomeActivity, Observer {
-            hourlyAdapter.submitList(it)
-        })
-        dailyList.observe(this@HomeActivity, Observer {
-            dailyAdapter.submitList(it)
-        })
+        hourlyList.observe(this@HomeActivity) { hourlyList ->
+            hourlyAdapter.submitList(hourlyList)
+        }
+        dailyList.observe(this@HomeActivity) { dailyList ->
+            dailyAdapter.submitList(dailyList)
+        }
     }
 }

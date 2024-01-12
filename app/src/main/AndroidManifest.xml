@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FavoriteActivity"
+            android:name=".ui.bookmark.BookmarkActivity"
             android:exported="false">
 
         </activity>

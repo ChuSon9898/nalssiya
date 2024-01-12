@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.weather_app.R
 import com.example.weather_app.data.model.HourlyDataModel
-import com.example.weather_app.databinding.HourlyItemBinding
+import com.example.weather_app.databinding.HomeHourlyItemBinding
 
 class HourlyListAdapter () : ListAdapter<HourlyDataModel, HourlyListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<HourlyDataModel>() {
@@ -25,7 +25,7 @@ class HourlyListAdapter () : ListAdapter<HourlyDataModel, HourlyListAdapter.View
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            HourlyItemBinding.inflate(
+            HomeHourlyItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -38,7 +38,7 @@ class HourlyListAdapter () : ListAdapter<HourlyDataModel, HourlyListAdapter.View
         holder.bind(item)
     }
 
-    class ViewHolder(private val binding: HourlyItemBinding) :
+    class ViewHolder(private val binding: HomeHourlyItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("SetTextI18n")

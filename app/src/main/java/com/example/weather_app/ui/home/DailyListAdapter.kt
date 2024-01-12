@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.weather_app.R
 import com.example.weather_app.data.model.DailyDataModel
-import com.example.weather_app.databinding.DailyItemBinding
+import com.example.weather_app.databinding.HomeDailyItemBinding
 
 class DailyListAdapter () : ListAdapter<DailyDataModel, DailyListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<DailyDataModel>() {
@@ -25,7 +25,7 @@ class DailyListAdapter () : ListAdapter<DailyDataModel, DailyListAdapter.ViewHol
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            DailyItemBinding.inflate(
+            HomeDailyItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -38,7 +38,7 @@ class DailyListAdapter () : ListAdapter<DailyDataModel, DailyListAdapter.ViewHol
         holder.bind(item)
     }
 
-    class ViewHolder(private val binding: DailyItemBinding) :
+    class ViewHolder(private val binding: HomeDailyItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("SetTextI18n")
