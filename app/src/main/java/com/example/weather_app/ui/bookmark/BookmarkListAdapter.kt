@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_app.R
 import com.example.weather_app.data.model.BookmarkDataModel
-import com.example.weather_app.databinding.FavoriteRvItemBinding
+import com.example.weather_app.databinding.BookmarkRvItemBinding
 
 class BookmarkListAdapter :
     ListAdapter<BookmarkDataModel, BookmarkListAdapter.ViewHolder>(
@@ -40,7 +40,7 @@ class BookmarkListAdapter :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            FavoriteRvItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            BookmarkRvItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -50,7 +50,7 @@ class BookmarkListAdapter :
     }
 
     inner class ViewHolder(
-        private val binding: FavoriteRvItemBinding,
+        private val binding: BookmarkRvItemBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(favoriteItem: BookmarkDataModel) {
             with(binding) {

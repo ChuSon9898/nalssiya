@@ -33,5 +33,6 @@
     <string name="daily_item_title_minTemp">최저</string>
     <string name="daily_item_minTemp">-5°</string>
 
+    <!-- bookmark_activity.xml -->
     <string name="search_message">도시 또는 공항 검색</string>
 </resources>
