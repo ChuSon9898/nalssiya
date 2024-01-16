@@ -8,7 +8,7 @@
     tools:context=".ui.bookmark.BookmarkActivity">
 
     <EditText
-        android:id="@+id/favorite_et_search"
+        android:id="@+id/bookmark_et_search"
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:layout_marginStart="24dp"
@@ -27,18 +27,18 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/favorite_ib_search"
+        android:id="@+id/bookmark_ib_search"
         android:layout_width="22dp"
         android:layout_height="20dp"
         android:layout_marginEnd="16dp"
         android:background="@null"
         android:src="@drawable/ic_search"
-        app:layout_constraintBottom_toBottomOf="@+id/favorite_et_search"
-        app:layout_constraintEnd_toEndOf="@+id/favorite_et_search"
-        app:layout_constraintTop_toTopOf="@+id/favorite_et_search" />
+        app:layout_constraintBottom_toBottomOf="@+id/bookmark_et_search"
+        app:layout_constraintEnd_toEndOf="@+id/bookmark_et_search"
+        app:layout_constraintTop_toTopOf="@+id/bookmark_et_search" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/favorite_rv"
+        android:id="@+id/bookmark_rv"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="24dp"
@@ -48,5 +48,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/favorite_et_search" />
+        app:layout_constraintTop_toBottomOf="@+id/bookmark_et_search" />
 </androidx.constraintlayout.widget.ConstraintLayout>
