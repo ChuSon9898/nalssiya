@@ -2,20 +2,28 @@ package com.example.weather_app.ui.bookmark
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.weather_app.data.model.BookmarkDataModel
+import com.example.weather_app.data.room.BookmarkDatabase
+import com.example.weather_app.data.room.BookmarkEntity
 import com.example.weather_app.databinding.BookmarkActivityBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class BookmarkActivity : AppCompatActivity() {
 
     lateinit var binding: BookmarkActivityBinding
+    lateinit var bookmarkEntity: BookmarkEntity
 
     private val listAdapter by lazy {
         BookmarkListAdapter()
     }
 
-    private val favoriteViewModel by lazy {
-        ViewModelProvider(this, FavoriteViewModelFactory()).get(FavoriteViewModel::class.java)
+    private val bookmarkViewModel by lazy {
+        ViewModelProvider(this).get(BookmarkViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,20 +31,35 @@ class BookmarkActivity : AppCompatActivity() {
         binding = BookmarkActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         initView()
         initModel()
     }
 
     private fun initView() = with(binding) {
 
-        favoriteRv.adapter = listAdapter
-        favoriteRv.layoutManager = LinearLayoutManager(this@BookmarkActivity)
+        bookmarkRv.adapter = listAdapter
+        bookmarkRv.layoutManager = LinearLayoutManager(this@BookmarkActivity)
+
+        //추가 코드 -> 수정 예정
+        bookmarkIbSearch.setOnClickListener {
+            val location = bookmarkEtSearch.text.toString()
+            bookmarkViewModel.insertData(location)
+            bookmarkEtSearch.setText("")
+        }
+
+        //삭제 코드 -> 수정 예정
+        listAdapter.setOnItemClickListener(object : BookmarkListAdapter.OnItemClickListener{
+            override fun onItemClick(item: BookmarkDataModel, position: Int) {
+                bookmarkViewModel.deleteData(item.id, item.location)
+            }
+        })
 
     }
 
-    private fun initModel() = with(favoriteViewModel) {
-        favoriteViewModel.favoriteList.observe(this@BookmarkActivity){ favoriteList ->
-            listAdapter.submitList(favoriteList)
+    private fun initModel() = with(bookmarkViewModel) {
+        bookmarkViewModel.bookmarkList.observe(this@BookmarkActivity){ bookmarkList ->
+            listAdapter.submitList(bookmarkList)
         }
     }
 }
