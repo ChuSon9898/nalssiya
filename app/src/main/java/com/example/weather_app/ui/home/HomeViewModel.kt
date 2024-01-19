@@ -22,9 +22,9 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
     private val _dailyList: MutableLiveData<List<DailyDataModel>> = MutableLiveData()
     val dailyList: LiveData<List<DailyDataModel>> get() = _dailyList
 
-    private val _currentWeather: MutableLiveData<HourlyDataModel> = MutableLiveData()
+    private val _currentWeather: MutableLiveData<HourlyDataModel?> = MutableLiveData()
 
-    val currentWeather: LiveData<HourlyDataModel> get() = _currentWeather
+    val currentWeather: LiveData<HourlyDataModel?> get() = _currentWeather
 
     //임시 주석
 //    private val tempDailyWeather = mutableListOf<DailyDataModel>()
@@ -46,7 +46,6 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
     //임시 주석
 //    private val dayOfWeekFormatter = DateTimeFormatter.ofPattern("EEEE", Locale.KOREAN)
 
-//ㅎㅇㅎㅇㅎㅇ
     //날씨 데이터를 불러오고 해당 List에서 현재 기준 24시간 데이터 및 현재 날씨 정보를 불러오는 함수
     fun getHourlyWeather(
         nx: String,
@@ -65,6 +64,7 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
             val list = response.body()?.response!!.body.items.item
             val groupedData = mutableMapOf<Pair<String, String>, MutableList<Weather.Item>>()
 
+            //불러온 데이터의 해당 날짜, 시간을 Key값으로 하여 분류
             for (item in list) {
                 val key = Pair(item.fcstDate, item.fcstTime)
                 if (!groupedData.containsKey(key)) {
@@ -73,6 +73,7 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
                 groupedData[key]?.add(item)
             }
 
+            //분류된 데이터 객체화하여 날짜, 시간별 리스트 생성
             val hourlyData = groupedData.map { (key, items) ->
                 HourlyDataModel(
                     fcstDate = key.first,
@@ -90,94 +91,106 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
                 )
             }
 
+            //생성된 리스트에서 현재 시간 이후 24시간 내 데이터 필터링
             val todayHourlyData = hourlyData.filter { item ->
                 val dateTimeString = "${item.fcstDate}${item.fcstTime}"
                 currentDateTimeString <= dateTimeString && dateTimeString < tomorrowDateTimeString
             }
-            for (i in hourlyData) {
-                Log.d("viewModel", i.toString())
-            }
 
-            _currentWeather.value = hourlyData.find { it.fcstDate == currentDateTime2 && it.fcstTime == currentDateTime3 }
+            //생성된 리스트에서 현재 시간에 해당하는 데이터 찾기
+            val currentWeatherData =
+                hourlyData.find { it.fcstDate == currentDateTime2 && it.fcstTime == currentDateTime3 }
+
+            for (i in hourlyData) {
+                Log.d("viewModel", "들어온 데이터 : $i")
+            }
+            for (i in todayHourlyData) {
+                Log.d("viewModel", "필터링된 데이터 : $i")
+            }
+            Log.d("viewModel", "현재 날씨 데이터 : $currentWeatherData")
+
+            _currentWeather.value = currentWeatherData
             _hourlyList.value = todayHourlyData
         }
     }
 
-    //임시 주석
-//    fun getMinMaxTemp(nx: String, ny: String) {
-//        viewModelScope.launch {
-//            val response = repository.getHourlyData(
-//                900,
-//                1,
-//                currentDateTime.minusDays(1).format(formatter2).toInt(),
-//                "2300",
-//                nx,
-//                ny
-//            )
-//            val list = response.body()?.response!!.body.items.item.filter { it.category == "TMN" || it.category == "TMX" }
-//            val pairedList = list.windowed(2, 2, true) { (tmn, tmx) ->
-//                Pair(tmn, tmx)
-//            }
-//        }
-//    }
+    fun getMinMaxTemp(nx: String, ny: String) {
+        viewModelScope.launch {
+            val response = repository.getHourlyData(
+                900,
+                1,
+                currentDateTime.minusDays(1).format(formatter2).toInt(),
+                "2300",
+                nx,
+                ny
+            )
+            val list =
+                response.body()?.response!!.body.items.item.filter { it.category == "TMN" || it.category == "TMX" }
+            val pairedList = list.windowed(2, 2, true) { (tmn, tmx) ->
+                Pair(tmn, tmx)
+            }
+        }
+    }
 
     //단기예보 BaseTime 계산 함수
     private fun getBaseTime(time: LocalTime): String {
         var baseTime = ""
-        if (time.isAfter(LocalTime.of(2, 0)) && time.isBefore(LocalTime.of(5, 0))) baseTime = "2300"
-        else if (time.isAfter(LocalTime.of(5, 0)) && time.isBefore(LocalTime.of(8, 0))) baseTime =
+        if (!time.isBefore(LocalTime.of(3, 0)) && time.isBefore(LocalTime.of(6, 0))) baseTime =
             "0200"
-        else if (time.isAfter(LocalTime.of(8, 0)) && time.isBefore(
+        else if (!time.isBefore(LocalTime.of(6, 0)) && time.isBefore(LocalTime.of(9, 0))) baseTime =
+            "0500"
+        else if (!time.isBefore(LocalTime.of(9, 0)) && time.isBefore(
                 LocalTime.of(
-                    11,
-                    0
-                )
-            )
-        ) baseTime = "0500"
-        else if (time.isAfter(LocalTime.of(11, 0)) && time.isBefore(
-                LocalTime.of(
-                    14,
+                    12,
                     0
                 )
             )
         ) baseTime = "0800"
-        else if (time.isAfter(LocalTime.of(14, 0)) && time.isBefore(
+        else if (!time.isBefore(LocalTime.of(12, 0)) && time.isBefore(
                 LocalTime.of(
-                    17,
+                    15,
                     0
                 )
             )
         ) baseTime = "1100"
-        else if (time.isAfter(LocalTime.of(17, 0)) && time.isBefore(
+        else if (!time.isBefore(LocalTime.of(15, 0)) && time.isBefore(
                 LocalTime.of(
-                    20,
+                    18,
                     0
                 )
             )
         ) baseTime = "1400"
-        else if (time.isAfter(LocalTime.of(20, 0)) && time.isBefore(
+        else if (!time.isBefore(LocalTime.of(18, 0)) && time.isBefore(
                 LocalTime.of(
-                    23,
+                    21,
                     0
                 )
             )
         ) baseTime = "1700"
-        else if (time.isAfter(LocalTime.of(23, 0)) || time.isBefore(
+        else if (!time.isBefore(LocalTime.of(21, 0)) && time.isBefore(
                 LocalTime.of(
-                    2,
-                    0
+                    23,
+                    59,
+                    59,
                 )
             )
         ) baseTime = "2000"
+        else if (!time.isBefore(LocalTime.of(0, 0)) && time.isBefore(
+                LocalTime.of(
+                    3,
+                    0
+                )
+            )
+        ) baseTime = "2300"
 
         return baseTime
     }
 
     //단기예보 BaseDate 계산 함수
     private fun getBaseDate(time: LocalDateTime): Int {
-        val baseDate = time.format(DateTimeFormatter.ofPattern("yyyyMMdd")).toInt()
-        return if (time.hour in 0..1) baseDate - 1
-        else if (time.hour == 2 && time.minute in 0..14) baseDate - 1
+        val baseDate = time.format(formatter2).toInt()
+
+        return if (time.hour in 0 until 3) baseDate - 1
         else baseDate
     }
 }
