@@ -46,7 +46,7 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
     //임시 주석
 //    private val dayOfWeekFormatter = DateTimeFormatter.ofPattern("EEEE", Locale.KOREAN)
 
-
+//ㅎㅇㅎㅇㅎㅇ
     //날씨 데이터를 불러오고 해당 List에서 현재 기준 24시간 데이터 및 현재 날씨 정보를 불러오는 함수
     fun getHourlyWeather(
         nx: String,
