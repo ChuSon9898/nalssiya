@@ -56,6 +56,7 @@ dependencies {
     // Coil
     implementation("io.coil-kt:coil:2.4.0")
 
+    //Kotlin Extensions
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
 
@@ -66,5 +67,22 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$room_version")
 
     kapt("androidx.room:room-compiler:$room_version")
+
+
+    // Retrofit2
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // 위치
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
+
+    //Coroutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2")
+
+    //로그 확인용 OkHttp
+    implementation ("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2")
+    implementation ("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
 
 }
