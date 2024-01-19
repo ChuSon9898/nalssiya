@@ -10,12 +10,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.weather_app.R
-import com.example.weather_app.data.model.HourlyDataModel
 import com.example.weather_app.databinding.HomeActivityBinding
 import com.example.weather_app.util.RequestPermissionsUtil
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
+import com.example.weather_app.ui.bookmark.BookmarkActivity.Companion.bookmarkIndent
 
 class HomeActivity : AppCompatActivity() {
     //앱 실행 시, 위치 권한 묻기
@@ -56,6 +55,10 @@ class HomeActivity : AppCompatActivity() {
 
         rvHourly.layoutManager = LinearLayoutManager(this@HomeActivity, LinearLayoutManager.HORIZONTAL, true)
         rvDaily.layoutManager = LinearLayoutManager(this@HomeActivity, LinearLayoutManager.VERTICAL, false)
+
+        ivList.setOnClickListener {
+            startActivity(bookmarkIndent(this@HomeActivity))
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -75,7 +78,7 @@ class HomeActivity : AppCompatActivity() {
                     0 -> {
                         when (weather.sky.toInt()) {
                             1 -> tvWeather.text = "맑음"
-                            3 -> tvWeather.text = "구름 많음"
+                            3 -> tvWeather.text = "대체로 흐림"
                             4 -> tvWeather.text = "흐림"
                         }
                     }
