@@ -7,7 +7,7 @@
     android:background="@color/black">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/favorite_cv"
+        android:id="@+id/bookmark_cv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -24,7 +24,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/favorite_tv_location"
+                android:id="@+id/bookmark_tv_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -37,7 +37,7 @@
                 app:layout_constraintTop_toTopOf="@+id/cardView_layout" />
 
             <TextView
-                android:id="@+id/favorite_tv_time"
+                android:id="@+id/bookmark_tv_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -45,11 +45,11 @@
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/favorite_tv_location"
-                app:layout_constraintTop_toBottomOf="@+id/favorite_tv_location" />
+                app:layout_constraintStart_toStartOf="@+id/bookmark_tv_location"
+                app:layout_constraintTop_toBottomOf="@+id/bookmark_tv_location" />
 
             <TextView
-                android:id="@+id/favorite_tv_temp"
+                android:id="@+id/bookmark_tv_temp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="32dp"
@@ -58,10 +58,10 @@
                 android:textSize="30sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/favorite_tv_location" />
+                app:layout_constraintTop_toTopOf="@+id/bookmark_tv_location" />
 
             <TextView
-                android:id="@+id/favorite_tv_max_and_min"
+                android:id="@+id/bookmark_tv_max_and_min"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -73,7 +73,7 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/favorite_tv_temp" />
+                app:layout_constraintTop_toBottomOf="@+id/bookmark_tv_temp" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

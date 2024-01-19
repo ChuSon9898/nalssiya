@@ -55,7 +55,7 @@ class BookmarkListAdapter :
         fun bind(favoriteItem: BookmarkDataModel) {
             with(binding) {
 
-                if (favoriteItem.id == 0) {
+                if (favoriteItem.id == 1) {
                     cardViewLayout.setBackgroundColor(ContextCompat.getColor(root.context,
                         R.color.light_blue
                     ))
@@ -65,10 +65,10 @@ class BookmarkListAdapter :
                     ))
                 }
 
-                favoriteTvLocation.text = favoriteItem.location
-                favoriteTvTime.text = favoriteItem.time
-                favoriteTvTemp.text = favoriteItem.temp
-                favoriteTvMaxAndMin.text = favoriteItem.maxMin
+                bookmarkTvLocation.text = favoriteItem.location
+                bookmarkTvTime.text = favoriteItem.time
+                bookmarkTvTemp.text = favoriteItem.temp
+                bookmarkTvMaxAndMin.text = favoriteItem.maxMin
 
                 itemView.setOnClickListener {
                     onItemClickListener?.onItemClick(favoriteItem, adapterPosition)
