@@ -48,18 +48,18 @@ class HourlyListAdapter () : ListAdapter<HourlyDataModel, HourlyListAdapter.View
                 0 -> {
                     when (item.sky.toInt()) {
                         1 -> {
-                            if (item.fcstTime.toInt() in 600..1700) ivWeather.setImageResource(R.drawable.ic_sun)
-                            else ivWeather.setImageResource(R.drawable.ic_moon)
+                            if (item.fcstTime.toInt() in 600..1700) ivWeather.load(R.drawable.ic_sun)
+                            else ivWeather.load(R.drawable.ic_moon)
                         }
                         3 -> {
-                            if (item.fcstTime.toInt() in 600..1700) ivWeather.setImageResource(R.drawable.ic_sun_and_cloud)
-                            else ivWeather.setImageResource(R.drawable.ic_moon_and_cloud)
+                            if (item.fcstTime.toInt() in 600..1700) ivWeather.load(R.drawable.ic_sun_and_cloud)
+                            else ivWeather.load(R.drawable.ic_moon_and_cloud)
                         }
-                        4 -> ivWeather.setImageResource(R.drawable.ic_cloud)
+                        4 -> ivWeather.load(R.drawable.ic_cloud)
                     }
                 }
-                in 1..2, 4 -> ivWeather.setImageResource(R.drawable.ic_rain)
-                3 -> ivWeather.setImageResource(R.drawable.ic_snow)
+                in 1..2, 4 -> ivWeather.load(R.drawable.ic_rain)
+                3 -> ivWeather.load(R.drawable.ic_snow)
             }
             tvTemp.text = "${item.temp}°"
         }
