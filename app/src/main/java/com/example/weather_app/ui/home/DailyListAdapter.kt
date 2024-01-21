@@ -43,14 +43,22 @@ class DailyListAdapter () : ListAdapter<DailyDataModel, DailyListAdapter.ViewHol
 
         @SuppressLint("SetTextI18n")
         fun bind(item : DailyDataModel) = with(binding) {
-            tvDay.text = item.day
+            when (item.day) {
+                "월요일" -> tvDay.text = "월"
+                "화요일" -> tvDay.text = "화"
+                "수요일" -> tvDay.text = "수"
+                "목요일" -> tvDay.text = "목"
+                "금요일" -> tvDay.text = "금"
+                "토요일" -> tvDay.text = "토"
+                "일요일" -> tvDay.text = "일"
+            }
             tvDate.text = item.date
             when(item.weather) {
                 "맑음" -> ivWeather.load(R.drawable.ic_sun)
-                "구름" -> ivWeather.load(R.drawable.ic_cloud)
-                "눈" -> ivWeather.load(R.drawable.ic_snow)
+                "대체로 흐림" -> ivWeather.load(R.drawable.ic_sun_and_cloud)
+                "흐림" -> ivWeather.load(R.drawable.ic_cloud)
                 "비" -> ivWeather.load(R.drawable.ic_rain)
-                else -> {}
+                "눈" -> ivWeather.load(R.drawable.ic_snow)
             }
             tvMaxtemp.text = "${item.maxTemp}°"
             tvMintemp.text = "${item.minTemp}°"
