@@ -7,12 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weather_app.data.model.DailyDataModel
 import com.example.weather_app.data.model.HourlyDataModel
+import com.example.weather_app.data.model.TempDaily
 import com.example.weather_app.data.model.Weather
 import com.example.weather_app.data.retrofit.HourlyRepository
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
 import java.util.Locale
 
 class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
@@ -26,8 +28,9 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
 
     val currentWeather: LiveData<HourlyDataModel?> get() = _currentWeather
 
-    //임시 주석
-//    private val tempDailyWeather = mutableListOf<DailyDataModel>()
+    private val _currentWeather2: MutableLiveData<DailyDataModel> = MutableLiveData()
+
+    val currentWeather2: LiveData<DailyDataModel> get() = _currentWeather2
 
     private val currentDateTime = LocalDateTime.now()
     private val tomorrowDateTime = currentDateTime.plusHours(24)
@@ -43,8 +46,7 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
     private val formatter3 = DateTimeFormatter.ofPattern("HH")
     private val currentDateTime3 = "${currentDateTime.format(formatter3)}00"
 
-    //임시 주석
-//    private val dayOfWeekFormatter = DateTimeFormatter.ofPattern("EEEE", Locale.KOREAN)
+    private val formatter4 = DateTimeFormatter.ofPattern("MM / dd")
 
     //날씨 데이터를 불러오고 해당 List에서 현재 기준 24시간 데이터 및 현재 날씨 정보를 불러오는 함수
     fun getHourlyWeather(
@@ -114,8 +116,10 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
         }
     }
 
+    //최근 3일(오늘, 내일, 모레) 날씨 데이터를 불러오는 함수
     fun getMinMaxTemp(nx: String, ny: String) {
         viewModelScope.launch {
+            val weatherList = mutableListOf<DailyDataModel>()
             val response = repository.getHourlyData(
                 900,
                 1,
@@ -124,12 +128,86 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
                 nx,
                 ny
             )
-            val list =
-                response.body()?.response!!.body.items.item.filter { it.category == "TMN" || it.category == "TMX" }
-            val pairedList = list.windowed(2, 2, true) { (tmn, tmx) ->
-                Pair(tmn, tmx)
+            val list = response.body()?.response!!.body.items.item
+
+            val groupedData = mutableMapOf<Pair<String, String>, MutableList<Weather.Item>>()
+
+            //불러온 데이터의 해당 날짜, 시간을 Key값으로 하여 분류
+            for (item in list) {
+                val key = Pair(item.fcstDate, item.fcstTime)
+                if (!groupedData.containsKey(key)) {
+                    groupedData[key] = mutableListOf()
+                }
+                groupedData[key]?.add(item)
+            }
+
+            //분류된 데이터 객체화하여 날짜, 시간별 리스트 생성
+            val tempDaily = groupedData.map { (key, items) ->
+                TempDaily(
+                    fcstDate = key.first,
+                    fcstTime = key.second,
+                    minTemp = items.firstOrNull { it.category == "TMN" }?.fcstValue ?: "",
+                    maxTemp = items.firstOrNull { it.category == "TMX" }?.fcstValue ?: "",
+                    sky = items.firstOrNull { it.category == "SKY" }?.fcstValue ?: "",
+                    rainType = items.firstOrNull { it.category == "PTY" }?.fcstValue ?: "",
+                )
+            }
+
+            //최근 3일간 최소, 최대 온도 데이터
+            val minTempList = list.filter { it.category == "TMN" }.map { it.fcstValue }
+            val maxTempList = list.filter { it.category == "TMX" }.map { it.fcstValue }
+
+            //최근 3일간 날씨 데이터 생성
+            for (i in 0..2) {
+                weatherList.add(
+                    DailyDataModel(
+                        convertDay(currentDateTime.plusDays(i.toLong())),
+                        currentDateTime.plusDays(i.toLong()).format(formatter4),
+                        representWeather(tempDaily)[i],
+                        maxTempList[i],
+                        minTempList[i]
+                    )
+                )
+
+            }
+            //오늘 것은 Activity에 띄우기 위해 따로 분리
+            _currentWeather2.value = weatherList[0]
+            //내일, 모레 데이터 일간 리스트에 전달
+            _dailyList.value = weatherList.slice(1..2)
+        }
+    }
+
+    //날짜를 요일로 변환하는 함수
+    private fun convertDay(time: LocalDateTime): String {
+        return time.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN)
+    }
+
+    //하루 기준 대표 날씨 지정 함수
+    private fun representWeather(list: List<TempDaily>): List<String> {
+        val weatherList = mutableListOf<String>()
+
+        for (i in list.slice(0..<list.lastIndex).chunked(24)) {
+            if (i.any { it.rainType == "0" }) {
+                val maxSky = i.groupBy { it.sky }
+                    .maxBy { it.value.size }
+                    .key
+                when (maxSky) {
+                    "1" -> weatherList.add("맑음")
+                    "3" -> weatherList.add("대체로 흐림")
+                    "4" -> weatherList.add("흐림")
+                }
+            } else {
+                val maxType = i.groupBy { it.rainType }
+                    .maxBy { it.value.size }
+                    .key
+                when (maxType) {
+                    "1", "2", "4" -> weatherList.add("비")
+                    "3" -> weatherList.add("눈")
+                }
             }
         }
+
+        return weatherList.toList()
     }
 
     //단기예보 BaseTime 계산 함수
@@ -188,9 +266,7 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
 
     //단기예보 BaseDate 계산 함수
     private fun getBaseDate(time: LocalDateTime): Int {
-        val baseDate = time.format(formatter2).toInt()
-
-        return if (time.hour in 0 until 3) baseDate - 1
-        else baseDate
+        return if (time.hour in 0 until 3) time.minusDays(1).format(formatter2).toInt()
+        else time.format(formatter2).toInt()
     }
 }
