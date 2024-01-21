@@ -64,6 +64,8 @@ class HomeActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     private fun initViewModel(point: Point) = with(viewModel) {
         getHourlyWeather(point.x.toString(), point.y.toString())
+        getMinMaxTemp(point.x.toString(), point.y.toString())
+
         hourlyList.observe(this@HomeActivity, Observer { hourlyList ->
             hourlyAdapter.submitList(hourlyList)
         })
@@ -72,7 +74,7 @@ class HomeActivity : AppCompatActivity() {
         })
         currentWeather.observe(this@HomeActivity, Observer { weather ->
             with(binding) {
-                tvTemp.text = "${weather.temp}°"
+                tvTemp.text = "${weather!!.temp}°"
 
                 when (weather.rainType.toInt()) {
                     0 -> {
@@ -103,13 +105,20 @@ class HomeActivity : AppCompatActivity() {
 
                 when (weather.rainHour) {
                     "강수없음" -> tvRain.text = "0mm"
-                    else -> tvRain.text = "${weather.rainHour}mm"
+                    else -> tvRain.text = weather.rainHour
                 }
 
                 when (weather.snowHour) {
                     "적설없음" -> tvSnow.text = "0cm"
-                    else -> tvSnow.text = "${weather.snowHour}cm"
+                    else -> tvSnow.text = weather.snowHour
                 }
+            }
+        })
+
+        currentWeather2.observe(this@HomeActivity, Observer {weather ->
+            with(binding) {
+                tvMaxtemp.text = "최고:${weather.maxTemp}°"
+                tvMintemp.text = "최저:${weather.minTemp}°"
             }
         })
     }
