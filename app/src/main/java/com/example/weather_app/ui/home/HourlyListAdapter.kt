@@ -66,15 +66,11 @@ class HourlyListAdapter () : ListAdapter<HourlyDataModel, HourlyListAdapter.View
 
         //오전, 오후 구분 함수
         private fun checkAMPM (time : String) : String {
-            var convertTime : String? = null
-
-            when (time.toInt()) {
-                in 0..1100 -> convertTime = "오전 ${time.toInt() / 100}시"
-                1200 -> convertTime = "오후 12시"
-                else -> convertTime = "오후 ${time.toInt() / 100 - 12}시"
+            return when (time.toInt()) {
+                in 0..1100 -> "오전 ${time.toInt() / 100}시"
+                1200 -> "오후 12시"
+                else -> "오후 ${time.toInt() / 100 - 12}시"
             }
-
-            return convertTime
         }
     }
 }
