@@ -1,10 +1,13 @@
 package com.example.weather_app.ui.bookmark
 
+import android.graphics.Canvas
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_app.data.model.BookmarkDataModel
 import com.example.weather_app.data.room.BookmarkDatabase
 import com.example.weather_app.data.room.BookmarkEntity
@@ -36,7 +39,12 @@ class BookmarkActivity : AppCompatActivity() {
         initModel()
     }
 
+
+
     private fun initView() = with(binding) {
+
+        var itemTouchHelper = ItemTouchHelper(SwipeToDelete(listAdapter, this@BookmarkActivity))
+        itemTouchHelper.attachToRecyclerView(bookmarkRv)
 
         bookmarkRv.adapter = listAdapter
         bookmarkRv.layoutManager = LinearLayoutManager(this@BookmarkActivity)
@@ -47,13 +55,6 @@ class BookmarkActivity : AppCompatActivity() {
             bookmarkViewModel.insertData(location)
             bookmarkEtSearch.setText("")
         }
-
-        //삭제 코드 -> 수정 예정
-        listAdapter.setOnItemClickListener(object : BookmarkListAdapter.OnItemClickListener{
-            override fun onItemClick(item: BookmarkDataModel, position: Int) {
-                bookmarkViewModel.deleteData(item.id, item.location)
-            }
-        })
 
     }
 

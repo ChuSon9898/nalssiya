@@ -85,4 +85,8 @@ dependencies {
     implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
 
+    //swipelayout
+//    implementation("com.github.xabaras:RecyclerViewSwipeDecorator:1.4")
+
+
 }
