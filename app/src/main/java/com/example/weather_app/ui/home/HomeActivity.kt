@@ -2,6 +2,8 @@ package com.example.weather_app.ui.home
 
 import android.annotation.SuppressLint
 import android.graphics.Point
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +17,8 @@ import com.example.weather_app.util.RequestPermissionsUtil
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.example.weather_app.ui.bookmark.BookmarkActivity.Companion.bookmarkIndent
+import java.io.IOException
+import java.util.Locale
 
 class HomeActivity : AppCompatActivity() {
     //앱 실행 시, 위치 권한 묻기
@@ -64,13 +68,13 @@ class HomeActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     private fun initViewModel(point: Point) = with(viewModel) {
         getHourlyWeather(point.x.toString(), point.y.toString())
-        getMinMaxTemp(point.x.toString(), point.y.toString())
+        getDailyWeather(point.x.toString(), point.y.toString())
 
         hourlyList.observe(this@HomeActivity, Observer { hourlyList ->
             hourlyAdapter.submitList(hourlyList)
         })
-        dailyList.observe(this@HomeActivity, Observer { dailyList ->
-            dailyAdapter.submitList(dailyList)
+        dailyList.observe(this@HomeActivity, Observer { threeDayList ->
+            dailyAdapter.submitList(threeDayList)
         })
         currentWeather.observe(this@HomeActivity, Observer { weather ->
             with(binding) {
@@ -134,7 +138,9 @@ class HomeActivity : AppCompatActivity() {
                     latitude = location.latitude
                     longitude = location.longitude
                     initViewModel(dfsXyConv(latitude, longitude))
-                    Log.d("Location", "성공")
+                    Log.d("HomeActivity", "성공")
+                    val address = getAddress(latitude, longitude)?.get(0)
+                    Log.d("HomeActivity", address.toString())
                 }
             }
             .addOnFailureListener { fail ->
@@ -179,5 +185,18 @@ class HomeActivity : AppCompatActivity() {
         val y = (ro - ra * Math.cos(theta) + YO + 0.5).toInt()
 
         return Point(x, y)
+    }
+
+    private fun getAddress(lat: Double, lng: Double): List<Address>? {
+        lateinit var address: List<Address>
+
+        return try {
+            val geocoder = Geocoder(this, Locale.KOREA)
+            address = geocoder.getFromLocation(lat, lng, 1) as List<Address>
+            address
+        } catch (e: IOException) {
+            Toast.makeText(this, "주소를 가져 올 수 없습니다", Toast.LENGTH_SHORT).show()
+            null
+        }
     }
 }
