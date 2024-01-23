@@ -7,8 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weather_app.data.model.DailyDataModel
 import com.example.weather_app.data.model.HourlyDataModel
-import com.example.weather_app.data.model.TempDaily
-import com.example.weather_app.data.model.Weather
+import com.example.weather_app.data.model.ThreeDailyModel
+import com.example.weather_app.data.model.HourlyWeather
+import com.example.weather_app.data.retrofit.DailyTempRepository
+import com.example.weather_app.data.retrofit.DailyWeatherRepository
 import com.example.weather_app.data.retrofit.HourlyRepository
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -17,7 +19,11 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
-class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
+class HomeViewModel(
+    private val hourlyRepository: HourlyRepository,
+    private val dailyTempRepository: DailyTempRepository,
+    private val dailyWeatherRepository: DailyWeatherRepository
+) : ViewModel() {
     private val _hourlyList: MutableLiveData<List<HourlyDataModel>> = MutableLiveData()
     val hourlyList: LiveData<List<HourlyDataModel>> get() = _hourlyList
 
@@ -54,7 +60,7 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
         ny: String
     ) {
         viewModelScope.launch {
-            val response = repository.getHourlyData(
+            val response = hourlyRepository.getHourlyData(
                 500,
                 1,
                 getBaseDate(currentDateTime),
@@ -64,7 +70,7 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
             )
             Log.d("ViewModel", "${getBaseDate(currentDateTime)}, ${getBaseTime(currentTime)}")
             val list = response.body()?.response!!.body.items.item
-            val groupedData = mutableMapOf<Pair<String, String>, MutableList<Weather.Item>>()
+            val groupedData = mutableMapOf<Pair<String, String>, MutableList<HourlyWeather.Item>>()
 
             //불러온 데이터의 해당 날짜, 시간을 Key값으로 하여 분류
             for (item in list) {
@@ -117,10 +123,10 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
     }
 
     //최근 3일(오늘, 내일, 모레) 날씨 데이터를 불러오는 함수
-    fun getMinMaxTemp(nx: String, ny: String) {
+    fun getDailyWeather(nx: String, ny: String) {
         viewModelScope.launch {
-            val weatherList = mutableListOf<DailyDataModel>()
-            val response = repository.getHourlyData(
+            val dailyWeatherList = mutableListOf<DailyDataModel>()
+            val response = hourlyRepository.getHourlyData(
                 900,
                 1,
                 currentDateTime.minusDays(1).format(formatter2).toInt(),
@@ -130,7 +136,7 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
             )
             val list = response.body()?.response!!.body.items.item
 
-            val groupedData = mutableMapOf<Pair<String, String>, MutableList<Weather.Item>>()
+            val groupedData = mutableMapOf<Pair<String, String>, MutableList<HourlyWeather.Item>>()
 
             //불러온 데이터의 해당 날짜, 시간을 Key값으로 하여 분류
             for (item in list) {
@@ -143,7 +149,7 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
 
             //분류된 데이터 객체화하여 날짜, 시간별 리스트 생성
             val tempDaily = groupedData.map { (key, items) ->
-                TempDaily(
+                ThreeDailyModel(
                     fcstDate = key.first,
                     fcstTime = key.second,
                     minTemp = items.firstOrNull { it.category == "TMN" }?.fcstValue ?: "",
@@ -159,7 +165,7 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
 
             //최근 3일간 날씨 데이터 생성
             for (i in 0..2) {
-                weatherList.add(
+                dailyWeatherList.add(
                     DailyDataModel(
                         convertDay(currentDateTime.plusDays(i.toLong())),
                         currentDateTime.plusDays(i.toLong()).format(formatter4),
@@ -170,10 +176,61 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
                 )
 
             }
+            
+            //3일~10일 날씨 데이터를 불러오는 코드 (임시 지역 코드, 수정 필요)
+            val tempResponse =
+                dailyTempRepository.getDailyTempData(10, 1, "11B10101", getTmFc(currentTime, currentDateTime))
+            val weatherResponse =
+                dailyWeatherRepository.getDailyWeatherData(10, 1, "11B00000", getTmFc(currentTime, currentDateTime))
+
+            val tempList = tempResponse.body()?.response!!.body.items.item
+            val weatherList = weatherResponse.body()?.response!!.body.items.item
+
+            for (i in 3..10) {
+                dailyWeatherList.add(
+                    DailyDataModel(
+                        convertDay(currentDateTime.plusDays(i.toLong())),
+                        currentDateTime.plusDays(i.toLong()).format(formatter4),
+                        when (i) {
+                            3 -> weatherList[0].wf3Pm
+                            4 -> weatherList[0].wf4Pm
+                            5 -> weatherList[0].wf5Pm
+                            6 -> weatherList[0].wf6Pm
+                            7 -> weatherList[0].wf7Pm
+                            8 -> weatherList[0].wf8
+                            9 -> weatherList[0].wf9
+                            else -> weatherList[0].wf10
+                        },
+                        when (i) {
+                            3 -> tempList[0].taMax3.toString()
+                            4 -> tempList[0].taMax4.toString()
+                            5 -> tempList[0].taMax5.toString()
+                            6 -> tempList[0].taMax6.toString()
+                            7 -> tempList[0].taMax7.toString()
+                            8 -> tempList[0].taMax8.toString()
+                            9 -> tempList[0].taMax9.toString()
+                            else -> tempList[0].taMax10.toString()
+                        },
+                        when (i) {
+                            3 -> tempList[0].taMin3.toString()
+                            4 -> tempList[0].taMin4.toString()
+                            5 -> tempList[0].taMin5.toString()
+                            6 -> tempList[0].taMin6.toString()
+                            7 -> tempList[0].taMin7.toString()
+                            8 -> tempList[0].taMin8.toString()
+                            9 -> tempList[0].taMin9.toString()
+                            else -> tempList[0].taMin10.toString()
+                        }
+                    )
+                )
+            }
+            Log.d("dailyTemp", tempList.toString())
+            Log.d("dailyWeather", weatherList.toString())
+            
             //오늘 것은 Activity에 띄우기 위해 따로 분리
-            _currentWeather2.value = weatherList[0]
+            _currentWeather2.value = dailyWeatherList[0]
             //내일, 모레 데이터 일간 리스트에 전달
-            _dailyList.value = weatherList.slice(1..2)
+            _dailyList.value = dailyWeatherList.slice(1..dailyWeatherList.lastIndex)
         }
     }
 
@@ -183,7 +240,7 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
     }
 
     //하루 기준 대표 날씨 지정 함수
-    private fun representWeather(list: List<TempDaily>): List<String> {
+    private fun representWeather(list: List<ThreeDailyModel>): List<String> {
         val weatherList = mutableListOf<String>()
 
         for (i in list.slice(0..<list.lastIndex).chunked(24)) {
@@ -268,5 +325,18 @@ class HomeViewModel(private val repository: HourlyRepository) : ViewModel() {
     private fun getBaseDate(time: LocalDateTime): Int {
         return if (time.hour in 0 until 3) time.minusDays(1).format(formatter2).toInt()
         else time.format(formatter2).toInt()
+    }
+
+    //중기예보 예보시간 계산 함수(tmFc)
+    private fun getTmFc(time : LocalTime, dateTime: LocalDateTime) : String {
+        return if (!time.isBefore(LocalTime.of(0, 0)) && time.isBefore(LocalTime.of(6, 5))) {
+            "${dateTime.minusDays(1).format(formatter2)}1800"
+        }
+        else if (!time.isBefore(LocalTime.of(6, 5)) && time.isBefore(LocalTime.of(18, 5))) {
+            "${dateTime.format(formatter2)}0600"
+        }
+        else {
+            "${dateTime.format(formatter2)}1800"
+        }
     }
 }
