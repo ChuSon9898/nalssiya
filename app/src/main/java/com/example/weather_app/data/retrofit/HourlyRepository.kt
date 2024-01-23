@@ -2,7 +2,7 @@ package com.example.weather_app.data.retrofit
 
 
 class HourlyRepository {
-    private val client = HourlyWeatherClient.getInstance().create(HourlyInterface::class.java)
+    private val client = RetrofitClient.getInstance().create(RetrofitInterface::class.java)
 
     suspend fun getHourlyData(
         numOfRows: Int,
@@ -11,5 +11,5 @@ class HourlyRepository {
         baseTime: String,
         nx: String,
         ny: String
-    ) = client.getWeather("JSON", numOfRows, pageNo, baseDate, baseTime, nx, ny)
+    ) = client.getHourlyWeatehr("JSON", numOfRows, pageNo, baseDate, baseTime, nx, ny)
 }
