@@ -53,33 +53,33 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
+        android:layout_marginStart="10dp"
         android:text="@string/daily_item_title_maxTemp"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/iv_weather"
-        app:layout_constraintEnd_toStartOf="@+id/tv_maxtemp"
+        app:layout_constraintStart_toEndOf="@+id/iv_weather"
         app:layout_constraintTop_toTopOf="@+id/iv_weather" />
 
     <TextView
         android:id="@+id/tv_maxtemp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
         android:text="@string/daily_item_maxTemp"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView4"
-        app:layout_constraintEnd_toStartOf="@+id/textView6"
+        app:layout_constraintStart_toEndOf="@+id/textView4"
         app:layout_constraintTop_toTopOf="@+id/textView4" />
 
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
+        android:layout_marginStart="60dp"
         android:text="@string/daily_item_title_minTemp"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/tv_maxtemp"
-        app:layout_constraintEnd_toStartOf="@+id/tv_mintemp"
+        app:layout_constraintStart_toEndOf="@+id/textView4"
         app:layout_constraintTop_toTopOf="@+id/tv_maxtemp" />
 
     <TextView
