@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_app.R
 import com.example.weather_app.data.model.BookmarkDataModel
+import com.example.weather_app.data.model.SearchLocation
 import com.example.weather_app.databinding.BookmarkRvItemBinding
 import okhttp3.internal.notify
 
@@ -22,17 +23,17 @@ class BookmarkListAdapter :
     ListAdapter<BookmarkDataModel, BookmarkListAdapter.ViewHolder>(
         object : DiffUtil.ItemCallback<BookmarkDataModel>() {
             override fun areItemsTheSame(
-                oldFavoriteItem: BookmarkDataModel,
-                newFavoriteItem: BookmarkDataModel
+                oldBookmarkItem: BookmarkDataModel,
+                newBookmarkItem: BookmarkDataModel
             ): Boolean {
-                return oldFavoriteItem.id == newFavoriteItem.id
+                return oldBookmarkItem.id == newBookmarkItem.id
             }
 
             override fun areContentsTheSame(
-                oldFavoriteItem: BookmarkDataModel,
-                newFavoriteItem: BookmarkDataModel
+                oldBookmarkItem: BookmarkDataModel,
+                newBookmarkItem: BookmarkDataModel
             ): Boolean {
-                return oldFavoriteItem == newFavoriteItem
+                return oldBookmarkItem == newBookmarkItem
             }
         }) {
 
@@ -67,10 +68,10 @@ class BookmarkListAdapter :
 
         val swipeLayout : CardView = binding.bookmarkCv
 
-        fun bind(favoriteItem: BookmarkDataModel) {
+        fun bind(bookmarkItem: BookmarkDataModel) {
             with(binding) {
 
-                if (favoriteItem.id == 1) {
+                if (bookmarkItem.id == 1) {
                     cardViewLayout.setBackgroundColor(ContextCompat.getColor(root.context,
                         R.color.light_blue
                     ))
@@ -80,10 +81,10 @@ class BookmarkListAdapter :
                     ))
                 }
 
-                bookmarkTvLocation.text = favoriteItem.location
-                bookmarkTvTime.text = favoriteItem.time
-                bookmarkTvTemp.text = favoriteItem.temp
-                bookmarkTvMaxAndMin.text = favoriteItem.maxMin
+                bookmarkTvLocation.text = bookmarkItem.location
+                bookmarkTvTime.text = bookmarkItem.time
+                bookmarkTvTemp.text = bookmarkItem.temp
+                bookmarkTvMaxAndMin.text = bookmarkItem.maxMin
 
             }
         }

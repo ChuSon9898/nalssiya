@@ -7,35 +7,33 @@
     android:background="@color/black"
     tools:context=".ui.bookmark.BookmarkActivity">
 
-    <EditText
-        android:id="@+id/bookmark_et_search"
+    <com.mancj.materialsearchbar.MaterialSearchBar
+        android:id="@+id/bookmark_searchbar"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="wrap_content"
+        app:circularflow_radiusInDP="15dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="24dp"
-        android:background="@drawable/shape_favorite_search"
-        android:hint="@string/search_message"
-        android:imeOptions="actionDone"
-        android:inputType="text"
-        android:padding="15dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
-        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:mt_hint="Custom hint"
+        app:mt_maxSuggestionsCount="5"
+        app:mt_speechMode="true" />
 
-    <ImageButton
-        android:id="@+id/bookmark_ib_search"
-        android:layout_width="22dp"
-        android:layout_height="20dp"
-        android:layout_marginEnd="16dp"
-        android:background="@null"
-        android:src="@drawable/ic_search"
-        app:layout_constraintBottom_toBottomOf="@+id/bookmark_et_search"
-        app:layout_constraintEnd_toEndOf="@+id/bookmark_et_search"
-        app:layout_constraintTop_toTopOf="@+id/bookmark_et_search" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bookmark_search_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/white"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bookmark_searchbar" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/bookmark_rv"
@@ -48,5 +46,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bookmark_et_search" />
+        app:layout_constraintTop_toBottomOf="@+id/bookmark_searchbar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

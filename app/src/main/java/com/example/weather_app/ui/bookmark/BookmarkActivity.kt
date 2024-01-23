@@ -1,20 +1,20 @@
 package com.example.weather_app.ui.bookmark
 
-import android.graphics.Canvas
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.weather_app.data.model.BookmarkDataModel
-import com.example.weather_app.data.room.BookmarkDatabase
+import com.example.weather_app.data.model.SearchLocation
 import com.example.weather_app.data.room.BookmarkEntity
 import com.example.weather_app.databinding.BookmarkActivityBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.mancj.materialsearchbar.MaterialSearchBar
 
 class BookmarkActivity : AppCompatActivity() {
 
@@ -23,6 +23,10 @@ class BookmarkActivity : AppCompatActivity() {
 
     private val listAdapter by lazy {
         BookmarkListAdapter()
+    }
+
+    private val searchListAdapter by lazy {
+        BookmarkSearchListAdapter()
     }
 
     private val bookmarkViewModel by lazy {
@@ -49,18 +53,74 @@ class BookmarkActivity : AppCompatActivity() {
         bookmarkRv.adapter = listAdapter
         bookmarkRv.layoutManager = LinearLayoutManager(this@BookmarkActivity)
 
-        //추가 코드 -> 수정 예정
-        bookmarkIbSearch.setOnClickListener {
-            val location = bookmarkEtSearch.text.toString()
-            bookmarkViewModel.insertData(location)
-            bookmarkEtSearch.setText("")
-        }
+//        //추가 코드 -> 수정 예정
+//        bookmarkIbSearch.setOnClickListener {
+//            val location = bookmarkEtSearch.text.toString()
+//            bookmarkViewModel.insertData(location)
+//            bookmarkEtSearch.setText("")
+//        }
+
+        bookmarkSearchbar.setHint("도시 또는 공항 검색")
+        bookmarkSearchbar.setSpeechMode(false)
+
+        bookmarkSearchRv.adapter = searchListAdapter
+        bookmarkSearchRv.layoutManager = LinearLayoutManager(this@BookmarkActivity)
+        bookmarkSearchRv.addItemDecoration(DividerItemDecoration(this@BookmarkActivity, LinearLayout.VERTICAL))
+
+
+        bookmarkSearchbar.setOnSearchActionListener(object: MaterialSearchBar.OnSearchActionListener{
+            override fun onSearchStateChanged(enabled: Boolean) {
+                if(enabled){
+                    bookmarkSearchRv.visibility = View.VISIBLE
+                    bookmarkRv.visibility = View.INVISIBLE
+                    (bookmarkSearchRv.layoutManager as LinearLayoutManager).scrollToPosition(0)
+                }else{
+                    bookmarkSearchRv.visibility = View.INVISIBLE
+                    bookmarkRv.visibility = View.VISIBLE
+                }
+            }
+
+            override fun onSearchConfirmed(text: CharSequence?) {
+
+            }
+
+            override fun onButtonClicked(buttonCode: Int) {
+
+            }
+
+        })
+
+        bookmarkSearchbar.addTextChangeListener(object : TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                bookmarkViewModel.searchLocation(s)
+            }
+
+        })
+
+        searchListAdapter.setOnItemClickListener(object : BookmarkSearchListAdapter.OnItemClickListener{
+            override fun onItemClick(item: SearchLocation, position: Int) {
+                Toast.makeText(this@BookmarkActivity, item.toString(), Toast.LENGTH_SHORT).show()
+            }
+        })
+
 
     }
 
     private fun initModel() = with(bookmarkViewModel) {
         bookmarkViewModel.bookmarkList.observe(this@BookmarkActivity){ bookmarkList ->
             listAdapter.submitList(bookmarkList)
+        }
+
+        bookmarkViewModel.searchList.observe(this@BookmarkActivity){ searchList ->
+            searchListAdapter.submitList(searchList)
         }
     }
 }
