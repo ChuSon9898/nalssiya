@@ -26,7 +26,7 @@ class SwipeToDelete(var adapter: BookmarkListAdapter, val context : ViewModelSto
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         var pos = viewHolder.adapterPosition
         val item = adapter.getItem(pos)
-        bookmarkViewModel.deleteData(item.id, item.location)
+        bookmarkViewModel.deleteData(item.id, item.location, item.nx, item.ny, item.landArea, item.tempArea)
 
         val view = (viewHolder as BookmarkListAdapter.ViewHolder).swipeLayout
         view.animate().translationX(0f).setDuration(300).start()

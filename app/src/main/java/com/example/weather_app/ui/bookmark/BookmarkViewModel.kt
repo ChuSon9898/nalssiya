@@ -58,9 +58,9 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
         for(r in 0 .. result.size -1 ){
 
             if(r == 0){
-                bookmarkList.add(BookmarkDataModel(result[r].id, result[r].location, "서울특별시", "-8°", "최고 -2°  최저 -8°"))
+                bookmarkList.add(BookmarkDataModel(result[r].id, result[r].location, "60", "127", "11B00000", "11B10101"))
             }else{
-                bookmarkList.add(BookmarkDataModel(result[r].id, result[r].location, "오후 16:00", "-8°", "최고 -2°  최저 -8°"))
+                bookmarkList.add(BookmarkDataModel(result[r].id, result[r].location, "60", "127", "11B00000", "11B10101"))
             }
         }
 
@@ -98,8 +98,6 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
         } else {
             val filteredList = mutableListOf<SearchLocation>()
 
-            Log.d("Notempty", s.toString())
-
             if (totalSearchList != null) {
                 for (item in totalSearchList) {
                     val location = item.Gu + " " + item.Dong
@@ -115,18 +113,13 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
 
     }
 
-    fun insertData(location: String) = viewModelScope.launch(Dispatchers.IO) {
-        repository.insertData(location)
+    fun insertData(location: String, nx: String, ny: String, landArea: String, tempArea: String) = viewModelScope.launch(Dispatchers.IO) {
+        repository.insertData(location, nx, ny, landArea, tempArea)
         getAllData()
     }
 
-    fun deleteAllData() = viewModelScope.launch(Dispatchers.IO) {
-        repository.deleteAllData()
-        getAllData()
-    }
-
-    fun deleteData(id: Int, location: String) = viewModelScope.launch(Dispatchers.IO) {
-        repository.deleteData(id, location)
+    fun deleteData(id: Int, location: String, nx: String, ny: String, landArea: String, tempArea: String) = viewModelScope.launch(Dispatchers.IO) {
+        repository.deleteData(id, location, nx, ny, landArea, tempArea)
         getAllData()
     }
 

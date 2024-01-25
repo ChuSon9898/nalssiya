@@ -75,16 +75,24 @@ class BookmarkListAdapter :
                     cardViewLayout.setBackgroundColor(ContextCompat.getColor(root.context,
                         R.color.light_blue
                     ))
+
+                    //API로 데이터 가져와서 업데이트
+                    bookmarkTvTime.text = "서울특별시"
+
                 } else {
                     cardViewLayout.setBackgroundColor(ContextCompat.getColor(root.context,
                         R.color.dark_blue
                     ))
+
+                    //시간 가져오기!
+                    bookmarkTvTime.text = "오후 16:00"
                 }
 
                 bookmarkTvLocation.text = bookmarkItem.location
-                bookmarkTvTime.text = bookmarkItem.time
-                bookmarkTvTemp.text = bookmarkItem.temp
-                bookmarkTvMaxAndMin.text = bookmarkItem.maxMin
+
+                //API로 데이터 가져와서 업데이트
+                bookmarkTvTemp.text = "8°"
+                bookmarkTvMaxAndMin.text = "최고 -2° 최저 -8°"
 
             }
         }

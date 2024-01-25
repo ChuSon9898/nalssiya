@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -85,6 +86,7 @@ class BookmarkActivity : AppCompatActivity() {
             }
 
             override fun onButtonClicked(buttonCode: Int) {
+                Log.d("Button ID", buttonCode.toString())
 
             }
 
@@ -108,6 +110,11 @@ class BookmarkActivity : AppCompatActivity() {
         searchListAdapter.setOnItemClickListener(object : BookmarkSearchListAdapter.OnItemClickListener{
             override fun onItemClick(item: SearchLocation, position: Int) {
                 Toast.makeText(this@BookmarkActivity, item.toString(), Toast.LENGTH_SHORT).show()
+
+                //수정 예정 -> Activity 이동
+                //item.nx, item.ny, item.landArea, item.tempArea
+                bookmarkViewModel.insertData(item.Dong, item.nx, item.ny, item.landArea, item.tempArea)
+                bookmarkSearchbar.closeSearch()
             }
         })
 
