@@ -7,6 +7,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -17,10 +18,12 @@ import com.example.weather_app.util.RequestPermissionsUtil
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.example.weather_app.ui.bookmark.BookmarkActivity.Companion.bookmarkIndent
+import com.example.weather_app.ui.bookmark.BookmarkDetailActivity
+import com.example.weather_app.ui.bookmark.BookmarkDetailActivity.Companion.detailIntent
 import java.io.IOException
 import java.util.Locale
 
-class HomeActivity : AppCompatActivity() {
+open class HomeActivity : AppCompatActivity() {
     //앱 실행 시, 위치 권한 묻기
     override fun onStart() {
         super.onStart()
@@ -63,6 +66,12 @@ class HomeActivity : AppCompatActivity() {
         ivList.setOnClickListener {
             startActivity(bookmarkIndent(this@HomeActivity))
         }
+        button.setOnClickListener {
+            startActivity(detailIntent(this@HomeActivity))
+        }
+
+        tvCancel.visibility = View.GONE
+        tvAdd.visibility = View.GONE
     }
 
     @SuppressLint("SetTextI18n")
@@ -187,6 +196,7 @@ class HomeActivity : AppCompatActivity() {
         return Point(x, y)
     }
 
+    //위, 경도 -> 주소 변환 함수
     private fun getAddress(lat: Double, lng: Double): List<Address>? {
         lateinit var address: List<Address>
 
