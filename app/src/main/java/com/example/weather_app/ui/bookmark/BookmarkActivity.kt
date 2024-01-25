@@ -1,18 +1,15 @@
 package com.example.weather_app.ui.bookmark
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
-import android.view.View
-import android.widget.LinearLayout
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weather_app.data.model.SearchLocation
+import com.example.weather_app.data.model.BookmarkDataModel
 import com.example.weather_app.data.room.BookmarkEntity
 import com.example.weather_app.databinding.BookmarkActivityBinding
 import com.mancj.materialsearchbar.MaterialSearchBar
@@ -32,6 +29,13 @@ class BookmarkActivity : AppCompatActivity() {
 
     private val bookmarkViewModel by lazy {
         ViewModelProvider(this).get(BookmarkViewModel::class.java)
+    }
+
+    companion object {
+        fun bookmarkIndent(context: Context): Intent {
+            val intent = Intent(context, BookmarkActivity::class.java)
+            return intent
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

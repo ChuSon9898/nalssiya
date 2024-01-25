@@ -49,33 +49,29 @@ class HourlyListAdapter () : ListAdapter<HourlyDataModel, HourlyListAdapter.View
                 0 -> {
                     when (item.sky.toInt()) {
                         1 -> {
-                            if (item.fcstTime.toInt() in 600..1700) ivWeather.setImageResource(R.drawable.ic_sun)
-                            else ivWeather.setImageResource(R.drawable.ic_moon)
+                            if (item.fcstTime.toInt() in 600..1700) ivWeather.load(R.drawable.ic_sun)
+                            else ivWeather.load(R.drawable.ic_moon)
                         }
                         3 -> {
-                            if (item.fcstTime.toInt() in 600..1700) ivWeather.setImageResource(R.drawable.ic_sun_and_cloud)
-                            else ivWeather.setImageResource(R.drawable.ic_moon_and_cloud)
+                            if (item.fcstTime.toInt() in 600..1700) ivWeather.load(R.drawable.ic_sun_and_cloud)
+                            else ivWeather.load(R.drawable.ic_moon_and_cloud)
                         }
-                        4 -> ivWeather.setImageResource(R.drawable.ic_cloud)
+                        4 -> ivWeather.load(R.drawable.ic_cloud)
                     }
                 }
-                in 1..2, 4 -> ivWeather.setImageResource(R.drawable.ic_rain)
-                3 -> ivWeather.setImageResource(R.drawable.ic_snow)
+                in 1..2, 4 -> ivWeather.load(R.drawable.ic_rain)
+                3 -> ivWeather.load(R.drawable.ic_snow)
             }
             tvTemp.text = "${item.temp}°"
         }
 
         //오전, 오후 구분 함수
         private fun checkAMPM (time : String) : String {
-            var convertTime : String? = null
-
-            when (time.toInt()) {
-                in 0..1100 -> convertTime = "오전 ${time.toInt() / 100}시"
-                1200 -> convertTime = "오후 12시"
-                else -> convertTime = "오후 ${time.toInt() / 100 - 12}시"
+            return when (time.toInt()) {
+                in 0..1100 -> "오전 ${time.toInt() / 100}시"
+                1200 -> "오후 12시"
+                else -> "오후 ${time.toInt() / 100 - 12}시"
             }
-
-            return convertTime
         }
     }
 }

@@ -17,7 +17,7 @@ data class HourlyDataModel(
 )
 
 //API로 받아오는 데이터 구조
-data class Weather(
+data class HourlyWeather(
     val response: Response
 ) {
 

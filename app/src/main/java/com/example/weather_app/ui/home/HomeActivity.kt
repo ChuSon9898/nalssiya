@@ -2,22 +2,28 @@ package com.example.weather_app.ui.home
 
 import android.annotation.SuppressLint
 import android.graphics.Point
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.weather_app.R
-import com.example.weather_app.data.model.HourlyDataModel
 import com.example.weather_app.databinding.HomeActivityBinding
 import com.example.weather_app.util.RequestPermissionsUtil
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
+import com.example.weather_app.ui.bookmark.BookmarkActivity.Companion.bookmarkIndent
+import com.example.weather_app.ui.bookmark.BookmarkDetailActivity
+import com.example.weather_app.ui.bookmark.BookmarkDetailActivity.Companion.detailIntent
+import java.io.IOException
+import java.util.Locale
 
-class HomeActivity : AppCompatActivity() {
+open class HomeActivity : AppCompatActivity() {
     //앱 실행 시, 위치 권한 묻기
     override fun onStart() {
         super.onStart()
@@ -56,26 +62,38 @@ class HomeActivity : AppCompatActivity() {
 
         rvHourly.layoutManager = LinearLayoutManager(this@HomeActivity, LinearLayoutManager.HORIZONTAL, true)
         rvDaily.layoutManager = LinearLayoutManager(this@HomeActivity, LinearLayoutManager.VERTICAL, false)
+
+        ivList.setOnClickListener {
+            startActivity(bookmarkIndent(this@HomeActivity))
+        }
+        button.setOnClickListener {
+            startActivity(detailIntent(this@HomeActivity))
+        }
+
+        tvCancel.visibility = View.GONE
+        tvAdd.visibility = View.GONE
     }
 
     @SuppressLint("SetTextI18n")
     private fun initViewModel(point: Point) = with(viewModel) {
         getHourlyWeather(point.x.toString(), point.y.toString())
+        getDailyWeather(point.x.toString(), point.y.toString())
+
         hourlyList.observe(this@HomeActivity, Observer { hourlyList ->
             hourlyAdapter.submitList(hourlyList)
         })
-        dailyList.observe(this@HomeActivity, Observer { dailyList ->
-            dailyAdapter.submitList(dailyList)
+        dailyList.observe(this@HomeActivity, Observer { threeDayList ->
+            dailyAdapter.submitList(threeDayList)
         })
         currentWeather.observe(this@HomeActivity, Observer { weather ->
             with(binding) {
-                tvTemp.text = "${weather.temp}°"
+                tvTemp.text = "${weather!!.temp}°"
 
                 when (weather.rainType.toInt()) {
                     0 -> {
                         when (weather.sky.toInt()) {
                             1 -> tvWeather.text = "맑음"
-                            3 -> tvWeather.text = "구름 많음"
+                            3 -> tvWeather.text = "대체로 흐림"
                             4 -> tvWeather.text = "흐림"
                         }
                     }
@@ -100,13 +118,20 @@ class HomeActivity : AppCompatActivity() {
 
                 when (weather.rainHour) {
                     "강수없음" -> tvRain.text = "0mm"
-                    else -> tvRain.text = "${weather.rainHour}mm"
+                    else -> tvRain.text = weather.rainHour
                 }
 
                 when (weather.snowHour) {
                     "적설없음" -> tvSnow.text = "0cm"
-                    else -> tvSnow.text = "${weather.snowHour}cm"
+                    else -> tvSnow.text = weather.snowHour
                 }
+            }
+        })
+
+        currentWeather2.observe(this@HomeActivity, Observer {weather ->
+            with(binding) {
+                tvMaxtemp.text = "최고:${weather.maxTemp}°"
+                tvMintemp.text = "최저:${weather.minTemp}°"
             }
         })
     }
@@ -122,7 +147,9 @@ class HomeActivity : AppCompatActivity() {
                     latitude = location.latitude
                     longitude = location.longitude
                     initViewModel(dfsXyConv(latitude, longitude))
-                    Log.d("Location", "성공")
+                    Log.d("HomeActivity", "성공")
+                    val address = getAddress(latitude, longitude)?.get(0)
+                    Log.d("HomeActivity", address.toString())
                 }
             }
             .addOnFailureListener { fail ->
@@ -167,5 +194,19 @@ class HomeActivity : AppCompatActivity() {
         val y = (ro - ra * Math.cos(theta) + YO + 0.5).toInt()
 
         return Point(x, y)
+    }
+
+    //위, 경도 -> 주소 변환 함수
+    private fun getAddress(lat: Double, lng: Double): List<Address>? {
+        lateinit var address: List<Address>
+
+        return try {
+            val geocoder = Geocoder(this, Locale.KOREA)
+            address = geocoder.getFromLocation(lat, lng, 1) as List<Address>
+            address
+        } catch (e: IOException) {
+            Toast.makeText(this, "주소를 가져 올 수 없습니다", Toast.LENGTH_SHORT).show()
+            null
+        }
     }
 }
