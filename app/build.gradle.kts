@@ -85,4 +85,11 @@ dependencies {
     implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
 
+    //검색창
+    implementation("com.github.mancj:MaterialSearchBar:0.8.5")
+
+    //opencsv
+    implementation("com.opencsv:opencsv:5.6")
+
+
 }
