@@ -8,10 +8,10 @@ class Repository(context: Context) {
 
     fun getListAll() = db.bookmarkDao().getAllData()
 
-    fun insertData(location: String) = db.bookmarkDao().insert(BookmarkEntity(0, location))
+    fun insertData(location: String, nx: String, ny: String, landArea: String, tempArea: String) = db.bookmarkDao().insert(BookmarkEntity(0, location, nx, ny, landArea, tempArea))
 
     fun deleteAllData() = db.bookmarkDao().deleteAllData()
 
-    fun deleteData(id : Int, location: String) = db.bookmarkDao().deleteData(BookmarkEntity(id, location))
+    fun deleteData(id : Int, location: String, nx: String, ny: String, landArea: String, tempArea: String) = db.bookmarkDao().deleteData(BookmarkEntity(id, location, nx, ny, landArea, tempArea))
 
 }

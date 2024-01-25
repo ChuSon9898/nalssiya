@@ -11,6 +11,14 @@ data class BookmarkEntity (
     @ColumnInfo(name = "id")
     val id : Int,
     @ColumnInfo(name = "location")
-    val location: String
+    val location: String,
+    @ColumnInfo(name = "nx")
+    val nx: String,
+    @ColumnInfo(name = "ny")
+    val ny: String,
+    @ColumnInfo(name = "landArea")
+    val landArea: String,
+    @ColumnInfo(name = "tempArea")
+    val tempArea: String
 
 )
