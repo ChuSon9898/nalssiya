@@ -2,6 +2,8 @@
     <string name="app_name">weather-app</string>
 
     <!-- home_activity.xml -->
+    <string name="home_activity_add">추가</string>
+    <string name="home_activity_cancel">취소</string>
     <string name="home_activity_location">나의 위치</string>
     <string name="home_activity_temp">0°</string>
     <string name="home_activity_weather">맑음</string>
