@@ -24,7 +24,6 @@ class BookmarkActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val OBJECT_DATA = "item_object"
         fun bookmarkIndent(context: Context): Intent {
             val intent = Intent(context, BookmarkActivity::class.java)
             return intent
