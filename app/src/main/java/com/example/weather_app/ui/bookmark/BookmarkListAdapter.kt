@@ -1,23 +1,15 @@
 package com.example.weather_app.ui.bookmark
 
-import android.nfc.cardemulation.CardEmulation
-import android.opengl.Visibility
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_app.R
 import com.example.weather_app.data.model.BookmarkDataModel
-import com.example.weather_app.data.model.SearchLocation
 import com.example.weather_app.databinding.BookmarkRvItemBinding
-import okhttp3.internal.notify
 
 class BookmarkListAdapter :
     ListAdapter<BookmarkDataModel, BookmarkListAdapter.ViewHolder>(
@@ -88,11 +80,20 @@ class BookmarkListAdapter :
                     bookmarkTvTime.text = "오후 16:00"
                 }
 
-                bookmarkTvLocation.text = bookmarkItem.location
+                if(bookmarkItem.Dong.isEmpty()){
+                    bookmarkTvLocation.text = bookmarkItem.Gu
+                }else{
+                    bookmarkTvLocation.text = bookmarkItem.Dong
+                }
+
 
                 //API로 데이터 가져와서 업데이트
                 bookmarkTvTemp.text = "8°"
                 bookmarkTvMaxAndMin.text = "최고 -2° 최저 -8°"
+
+                itemView.setOnClickListener {
+                    onItemClickListener?.onItemClick(bookmarkItem, adapterPosition)
+                }
 
             }
         }

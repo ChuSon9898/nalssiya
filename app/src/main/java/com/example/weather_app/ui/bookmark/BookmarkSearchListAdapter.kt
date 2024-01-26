@@ -5,31 +5,28 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.weather_app.data.model.SearchLocation
-import com.example.weather_app.databinding.BookmarkRvItemBinding
+import com.example.weather_app.data.model.BookmarkDataModel
 import com.example.weather_app.databinding.BookmarkSearchRvItemBinding
-import okhttp3.internal.notify
-
 class BookmarkSearchListAdapter :
-    ListAdapter<SearchLocation, BookmarkSearchListAdapter.ViewHolder>(
-        object : DiffUtil.ItemCallback<SearchLocation>() {
+    ListAdapter<BookmarkDataModel, BookmarkSearchListAdapter.ViewHolder>(
+        object : DiffUtil.ItemCallback<BookmarkDataModel>() {
             override fun areItemsTheSame(
-                oldBookmarkSearchItem: SearchLocation,
-                newBookmarkSearchItem: SearchLocation
+                oldBookmarkSearchItem: BookmarkDataModel,
+                newBookmarkSearchItem: BookmarkDataModel
             ): Boolean {
                 return oldBookmarkSearchItem.id == newBookmarkSearchItem.id
             }
 
             override fun areContentsTheSame(
-                oldBookmarkSearchItem: SearchLocation,
-                newBookmarkSearchItem: SearchLocation
+                oldBookmarkSearchItem: BookmarkDataModel,
+                newBookmarkSearchItem: BookmarkDataModel
             ): Boolean {
                 return oldBookmarkSearchItem == newBookmarkSearchItem
             }
         }) {
 
     interface OnItemClickListener {
-        fun onItemClick(item: SearchLocation, position:Int)
+        fun onItemClick(item: BookmarkDataModel, position:Int)
     }
 
     private var onItemClickListener: OnItemClickListener? = null
@@ -38,7 +35,7 @@ class BookmarkSearchListAdapter :
         this.onItemClickListener = listener
     }
 
-    public override fun getItem(position: Int): SearchLocation {
+    public override fun getItem(position: Int): BookmarkDataModel {
         return super.getItem(position)
     }
 
@@ -56,7 +53,7 @@ class BookmarkSearchListAdapter :
     inner class ViewHolder(
         private val binding: BookmarkSearchRvItemBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(searchItem: SearchLocation) {
+        fun bind(searchItem: BookmarkDataModel) {
             with(binding) {
 
                 bookmarkSearchTvList.text = searchItem.Gu +  " " + searchItem.Dong
