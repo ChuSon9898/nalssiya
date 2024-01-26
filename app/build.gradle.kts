@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -56,7 +57,7 @@ dependencies {
     // Coil
     implementation("io.coil-kt:coil:2.4.0")
 
-    //Kotlin Extensions
+    //Kotlin Extensions (by viewModels)
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
 
@@ -83,7 +84,6 @@ dependencies {
     implementation ("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2")
     implementation ("com.squareup.okhttp3:okhttp:4.11.0")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
-
 
     //검색창
     implementation("com.github.mancj:MaterialSearchBar:0.8.5")
