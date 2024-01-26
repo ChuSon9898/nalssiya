@@ -66,9 +66,6 @@ open class HomeActivity : AppCompatActivity() {
         ivList.setOnClickListener {
             startActivity(bookmarkIndent(this@HomeActivity))
         }
-        button.setOnClickListener {
-            startActivity(detailIntent(this@HomeActivity))
-        }
 
         tvCancel.visibility = View.GONE
         tvAdd.visibility = View.GONE
