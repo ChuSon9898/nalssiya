@@ -62,7 +62,7 @@ class HourlyListAdapter () : ListAdapter<HourlyDataModel, HourlyListAdapter.View
                 in 1..2, 4 -> ivWeather.load(R.drawable.ic_rain)
                 3 -> ivWeather.load(R.drawable.ic_snow)
             }
-            tvTemp.text = "${item.temp}°"
+            tvTemp.text = item.temp + "°"
         }
 
         //오전, 오후 구분 함수

@@ -9,16 +9,25 @@ import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weather_app.data.model.SearchLocation
+import com.example.weather_app.data.model.BookmarkDataModel
+import com.example.weather_app.data.room.BookmarkDAO
 import com.example.weather_app.data.room.BookmarkEntity
+import com.example.weather_app.data.room.Repository
 import com.example.weather_app.databinding.BookmarkActivityBinding
+import com.example.weather_app.ui.home.HomeViewModel
+import com.example.weather_app.ui.home.HomeViewModelFactory
 import com.example.weather_app.ui.bookmark.BookmarkDetailActivity.Companion.detailIntent
 import com.mancj.materialsearchbar.MaterialSearchBar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class BookmarkActivity : AppCompatActivity() {
 
@@ -33,8 +42,12 @@ class BookmarkActivity : AppCompatActivity() {
         BookmarkSearchListAdapter()
     }
 
-    private val bookmarkViewModel by lazy {
-        ViewModelProvider(this).get(BookmarkViewModel::class.java)
+//    private val bookmarkViewModel by lazy {
+//        ViewModelProvider(this).get(BookmarkViewModel::class.java)
+//    }
+
+    private val bookmarkViewModel: BookmarkViewModel by viewModels {
+        BookmarkViewModelFactory(application)
     }
 
     companion object {
@@ -96,7 +109,6 @@ class BookmarkActivity : AppCompatActivity() {
             }
 
             override fun onButtonClicked(buttonCode: Int) {
-                Log.d("Button ID", buttonCode.toString())
 
             }
 
@@ -121,11 +133,29 @@ class BookmarkActivity : AppCompatActivity() {
             override fun onItemClick(item: SearchLocation, position: Int) {
                 Toast.makeText(this@BookmarkActivity, item.toString(), Toast.LENGTH_SHORT).show()
 
+                //충돌!
+//                CoroutineScope(Dispatchers.IO).launch {
+//
+//                    val addBookmark = Repository(this@BookmarkActivity).getDatabylocation(item.Dong)
+//
+//                    if(addBookmark.isEmpty()){
+//                        if(item.Dong == ""){
+//                            bookmarkViewModel.insertData(item.Gu, item.nx, item.ny, item.landArea, item.tempArea)
+//                        }else{
+//                            bookmarkViewModel.insertData(item.Dong, item.nx, item.ny, item.landArea, item.tempArea)
+//                        }
+//                    }
+//                }
+//
+//                bookmarkSearchbar.closeSearch()
+
                 startActivity(detailIntent(this@BookmarkActivity, item))
 
                 bookmarkSearchbar.closeSearch()
             }
         })
+
+
     }
 
     private fun initModel() = with(bookmarkViewModel) {

@@ -1,5 +1,6 @@
 package com.example.weather_app.data.model
 
+
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
