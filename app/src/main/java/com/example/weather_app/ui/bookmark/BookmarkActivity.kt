@@ -3,15 +3,21 @@ package com.example.weather_app.ui.bookmark
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weather_app.data.model.SearchLocation
-import com.example.weather_app.data.model.BookmarkDataModel
 import com.example.weather_app.data.room.BookmarkEntity
 import com.example.weather_app.databinding.BookmarkActivityBinding
+import com.example.weather_app.ui.bookmark.BookmarkDetailActivity.Companion.detailIntent
 import com.mancj.materialsearchbar.MaterialSearchBar
 
 class BookmarkActivity : AppCompatActivity() {
@@ -96,7 +102,7 @@ class BookmarkActivity : AppCompatActivity() {
 
         })
 
-        bookmarkSearchbar.addTextChangeListener(object : TextWatcher{
+        bookmarkSearchbar.addTextChangeListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
 
             }
@@ -115,14 +121,11 @@ class BookmarkActivity : AppCompatActivity() {
             override fun onItemClick(item: SearchLocation, position: Int) {
                 Toast.makeText(this@BookmarkActivity, item.toString(), Toast.LENGTH_SHORT).show()
 
-                //수정 예정 -> Activity 이동
-                //item.nx, item.ny, item.landArea, item.tempArea
-                bookmarkViewModel.insertData(item.Dong, item.nx, item.ny, item.landArea, item.tempArea)
+                startActivity(detailIntent(this@BookmarkActivity, item))
+
                 bookmarkSearchbar.closeSearch()
             }
         })
-
-
     }
 
     private fun initModel() = with(bookmarkViewModel) {
