@@ -5,23 +5,22 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weather_app.data.model.BookmarkDataModel
-import com.example.weather_app.data.model.SearchLocation
+import com.example.weather_app.data.room.Repository
 import com.example.weather_app.databinding.HomeActivityBinding
 import com.example.weather_app.ui.home.DailyListAdapter
-import com.example.weather_app.ui.home.HomeActivity
 import com.example.weather_app.ui.home.HomeViewModel
 import com.example.weather_app.ui.home.HomeViewModelFactory
 import com.example.weather_app.ui.home.HourlyListAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class BookmarkDetailActivity : AppCompatActivity() {
     private lateinit var binding: HomeActivityBinding
@@ -43,18 +42,18 @@ class BookmarkDetailActivity : AppCompatActivity() {
 
     companion object {
         const val OBJECT_DATA = "item_object"
-        fun detailIntent(context: Context, item : SearchLocation): Intent {
+        fun detailIntent(context: Context, item : BookmarkDataModel): Intent {
             val intent = Intent(context, BookmarkDetailActivity::class.java)
             intent.putExtra(OBJECT_DATA, item)
             return intent
         }
     }
 
-    private val item : SearchLocation? by lazy {
+    private val item : BookmarkDataModel? by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra(OBJECT_DATA, SearchLocation::class.java)
+            intent.getParcelableExtra(OBJECT_DATA, BookmarkDataModel::class.java)
         } else {
-            intent.getParcelableExtra<SearchLocation>(OBJECT_DATA)
+            intent.getParcelableExtra<BookmarkDataModel>(OBJECT_DATA)
         }
     }
 
@@ -79,12 +78,29 @@ class BookmarkDetailActivity : AppCompatActivity() {
             finish()
         }
 
+        CoroutineScope(Dispatchers.IO).launch {
+
+            val addBookmark = Repository(applicationContext).getDatabylocation(item!!.Gu + " " + item!!.Dong)
+
+            if(addBookmark.isNotEmpty()){
+                tvAdd.visibility = View.INVISIBLE
+            }
+        }
+
         tvAdd.setOnClickListener {
-            bookmarkViewModel.insertData(item!!.Dong, item!!.nx, item!!.ny, item!!.landArea, item!!.tempArea)
+            val newBookmark = BookmarkDataModel(0,item!!.Gu, item!!.Dong, item!!.nx, item!!.ny, item!!.landArea,  item!!.tempArea)
+            intent.putExtra("newBookmark", newBookmark)
+            setResult(RESULT_OK, intent)
             finish()
         }
+
         ivList.visibility = View.GONE
-        tvLocation.text = item!!.Dong
+
+        if(item!!.Dong.isEmpty()){
+            tvLocation.text = item!!.Gu
+        }else{
+            tvLocation.text = item!!.Dong
+        }
     }
 
     @SuppressLint("SetTextI18n")

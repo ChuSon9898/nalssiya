@@ -7,7 +7,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class BookmarkDataModel(
     val id : Int,
-    val location: String,
+    val Gu: String,
+    val Dong: String,
     val nx : String,
     val ny : String,
     val landArea: String,
