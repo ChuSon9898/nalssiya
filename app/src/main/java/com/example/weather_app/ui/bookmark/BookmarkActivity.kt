@@ -23,6 +23,7 @@ import com.example.weather_app.data.room.Repository
 import com.example.weather_app.databinding.BookmarkActivityBinding
 import com.example.weather_app.ui.home.HomeViewModel
 import com.example.weather_app.ui.home.HomeViewModelFactory
+import com.example.weather_app.ui.bookmark.BookmarkDetailActivity.Companion.detailIntent
 import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -148,6 +149,9 @@ class BookmarkActivity : AppCompatActivity() {
 //
 //                bookmarkSearchbar.closeSearch()
 
+                startActivity(detailIntent(this@BookmarkActivity, item))
+
+                bookmarkSearchbar.closeSearch()
             }
         })
 

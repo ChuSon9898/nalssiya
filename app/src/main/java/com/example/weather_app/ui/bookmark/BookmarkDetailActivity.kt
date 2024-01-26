@@ -3,6 +3,7 @@ package com.example.weather_app.ui.bookmark
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +12,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.weather_app.data.model.BookmarkDataModel
+import com.example.weather_app.data.model.SearchLocation
 import com.example.weather_app.databinding.HomeActivityBinding
 import com.example.weather_app.ui.home.DailyListAdapter
 import com.example.weather_app.ui.home.HomeActivity
@@ -22,8 +26,12 @@ import com.example.weather_app.ui.home.HourlyListAdapter
 class BookmarkDetailActivity : AppCompatActivity() {
     private lateinit var binding: HomeActivityBinding
 
-    private val viewModel: HomeViewModel by viewModels {
+    private val homeViewModel: HomeViewModel by viewModels {
         HomeViewModelFactory()
+    }
+
+    private val bookmarkViewModel by lazy {
+        ViewModelProvider(this).get(BookmarkViewModel::class.java)
     }
 
     private val hourlyAdapter by lazy {
@@ -34,9 +42,19 @@ class BookmarkDetailActivity : AppCompatActivity() {
     }
 
     companion object {
-        fun detailIntent(context: Context): Intent {
+        const val OBJECT_DATA = "item_object"
+        fun detailIntent(context: Context, item : SearchLocation): Intent {
             val intent = Intent(context, BookmarkDetailActivity::class.java)
+            intent.putExtra(OBJECT_DATA, item)
             return intent
+        }
+    }
+
+    private val item : SearchLocation? by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(OBJECT_DATA, SearchLocation::class.java)
+        } else {
+            intent.getParcelableExtra<SearchLocation>(OBJECT_DATA)
         }
     }
 
@@ -57,13 +75,22 @@ class BookmarkDetailActivity : AppCompatActivity() {
         rvHourly.layoutManager = LinearLayoutManager(this@BookmarkDetailActivity, LinearLayoutManager.HORIZONTAL, true)
         rvDaily.layoutManager = LinearLayoutManager(this@BookmarkDetailActivity, LinearLayoutManager.VERTICAL, false)
 
+        tvCancel.setOnClickListener {
+            finish()
+        }
+
+        tvAdd.setOnClickListener {
+            bookmarkViewModel.insertData(item!!.Dong, item!!.nx, item!!.ny, item!!.landArea, item!!.tempArea)
+            finish()
+        }
         ivList.visibility = View.GONE
+        tvLocation.text = item!!.Dong
     }
 
     @SuppressLint("SetTextI18n")
-    private fun initViewModel() = with(viewModel) {
-        getHourlyWeather("98", "76")
-        getDailyWeather("98", "76")
+    private fun initViewModel() = with(homeViewModel) {
+        getHourlyWeather(item!!.nx, item!!.ny)
+        getDailyWeather(item!!.nx, item!!.ny)
 
         hourlyList.observe(this@BookmarkDetailActivity, Observer { hourlyList ->
             hourlyAdapter.submitList(hourlyList)

@@ -1,5 +1,9 @@
 package com.example.weather_app.data.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class SearchLocation(
     val id : Int,
     val Gu: String,
@@ -8,4 +12,4 @@ data class SearchLocation(
     val ny : String,
     val landArea: String,
     val tempArea: String
-)
+) : Parcelable
