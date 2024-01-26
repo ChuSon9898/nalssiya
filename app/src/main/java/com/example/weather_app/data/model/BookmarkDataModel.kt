@@ -1,6 +1,9 @@
 package com.example.weather_app.data.model
 
-//데이터 타입 수정 필요!
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class BookmarkDataModel(
     val id : Int,
     val location: String,
@@ -8,4 +11,4 @@ data class BookmarkDataModel(
     val ny : String,
     val landArea: String,
     val tempArea: String
-)
+) : Parcelable
