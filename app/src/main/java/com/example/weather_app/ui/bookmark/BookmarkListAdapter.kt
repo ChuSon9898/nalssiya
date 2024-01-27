@@ -68,16 +68,10 @@ class BookmarkListAdapter :
                         R.color.light_blue
                     ))
 
-                    //API로 데이터 가져와서 업데이트
-                    bookmarkTvTime.text = "서울특별시"
-
                 } else {
                     cardViewLayout.setBackgroundColor(ContextCompat.getColor(root.context,
                         R.color.dark_blue
                     ))
-
-                    //시간 가져오기!
-                    bookmarkTvTime.text = "오후 16:00"
                 }
 
                 if(bookmarkItem.Dong.isEmpty()){
