@@ -33,10 +33,6 @@ class BookmarkDetailActivity : AppCompatActivity() {
         HomeViewModelFactory()
     }
 
-    private val bookmarkViewModel by lazy {
-        ViewModelProvider(this).get(BookmarkViewModel::class.java)
-    }
-
     private val hourlyAdapter by lazy {
         HourlyListAdapter()
     }
@@ -121,7 +117,6 @@ class BookmarkDetailActivity : AppCompatActivity() {
             cv4.setCardBackgroundColor(lightCardView)
             cv5.setCardBackgroundColor(lightCardView)
             cv6.setCardBackgroundColor(lightCardView)
-            Log.d("homeActivityColor", "밝아ㅎ")
         }
         else {
             window.decorView.setBackgroundColor(darkBackground)
@@ -131,7 +126,6 @@ class BookmarkDetailActivity : AppCompatActivity() {
             cv4.setCardBackgroundColor(darkCardView)
             cv5.setCardBackgroundColor(darkCardView)
             cv6.setCardBackgroundColor(darkCardView)
-            Log.d("homeActivityColor", "어두워ㅜ")
         }
     }
 
