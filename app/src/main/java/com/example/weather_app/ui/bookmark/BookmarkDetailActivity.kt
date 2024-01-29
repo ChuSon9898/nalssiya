@@ -5,12 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.weather_app.R
 import com.example.weather_app.data.model.BookmarkDataModel
 import com.example.weather_app.data.room.Repository
 import com.example.weather_app.databinding.HomeActivityBinding
@@ -21,16 +24,13 @@ import com.example.weather_app.ui.home.HourlyListAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalTime
 
 class BookmarkDetailActivity : AppCompatActivity() {
     private lateinit var binding: HomeActivityBinding
 
     private val homeViewModel: HomeViewModel by viewModels {
         HomeViewModelFactory()
-    }
-
-    private val bookmarkViewModel by lazy {
-        ViewModelProvider(this).get(BookmarkViewModel::class.java)
     }
 
     private val hourlyAdapter by lazy {
@@ -100,6 +100,32 @@ class BookmarkDetailActivity : AppCompatActivity() {
             tvLocation.text = item!!.Gu
         }else{
             tvLocation.text = item!!.Dong
+        }
+
+        val currentTime = LocalTime.now()
+
+        val lightBackground = ContextCompat.getColor(this@BookmarkDetailActivity, R.color.light_blue)
+        val darkBackground = ContextCompat.getColor(this@BookmarkDetailActivity, R.color.dark_gray)
+        val lightCardView = ContextCompat.getColor(this@BookmarkDetailActivity, R.color.cv_light_color)
+        val darkCardView = ContextCompat.getColor(this@BookmarkDetailActivity, R.color.light_gray)
+
+        if (!currentTime.isBefore(LocalTime.of(6, 0)) && currentTime.isBefore(LocalTime.of(18, 0))) {
+            window.decorView.setBackgroundColor(lightBackground)
+            cv1.setCardBackgroundColor(lightCardView)
+            cv2.setCardBackgroundColor(lightCardView)
+            cv3.setCardBackgroundColor(lightCardView)
+            cv4.setCardBackgroundColor(lightCardView)
+            cv5.setCardBackgroundColor(lightCardView)
+            cv6.setCardBackgroundColor(lightCardView)
+        }
+        else {
+            window.decorView.setBackgroundColor(darkBackground)
+            cv1.setCardBackgroundColor(darkCardView)
+            cv2.setCardBackgroundColor(darkCardView)
+            cv3.setCardBackgroundColor(darkCardView)
+            cv4.setCardBackgroundColor(darkCardView)
+            cv5.setCardBackgroundColor(darkCardView)
+            cv6.setCardBackgroundColor(darkCardView)
         }
     }
 

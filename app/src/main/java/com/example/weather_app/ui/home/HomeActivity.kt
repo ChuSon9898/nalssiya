@@ -11,8 +11,10 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.weather_app.R
 import com.example.weather_app.databinding.HomeActivityBinding
 import com.example.weather_app.util.RequestPermissionsUtil
 import com.google.android.gms.location.LocationServices
@@ -21,6 +23,7 @@ import com.example.weather_app.ui.bookmark.BookmarkActivity.Companion.bookmarkIn
 import com.example.weather_app.ui.bookmark.BookmarkDetailActivity
 import com.example.weather_app.ui.bookmark.BookmarkDetailActivity.Companion.detailIntent
 import java.io.IOException
+import java.time.LocalTime
 import java.util.Locale
 
 open class HomeActivity : AppCompatActivity() {
@@ -69,6 +72,34 @@ open class HomeActivity : AppCompatActivity() {
 
         tvCancel.visibility = View.GONE
         tvAdd.visibility = View.GONE
+
+        val currentTime = LocalTime.now()
+
+        val lightBackground = ContextCompat.getColor(this@HomeActivity, R.color.light_blue)
+        val darkBackground = ContextCompat.getColor(this@HomeActivity, R.color.dark_gray)
+        val lightCardView = ContextCompat.getColor(this@HomeActivity, R.color.cv_light_color)
+        val darkCardView = ContextCompat.getColor(this@HomeActivity, R.color.light_gray)
+
+        if (!currentTime.isBefore(LocalTime.of(6, 0)) && currentTime.isBefore(LocalTime.of(18, 0))) {
+            window.decorView.setBackgroundColor(lightBackground)
+            cv1.setCardBackgroundColor(lightCardView)
+            cv2.setCardBackgroundColor(lightCardView)
+            cv3.setCardBackgroundColor(lightCardView)
+            cv4.setCardBackgroundColor(lightCardView)
+            cv5.setCardBackgroundColor(lightCardView)
+            cv6.setCardBackgroundColor(lightCardView)
+            Log.d("homeActivityColor", "밝아ㅎ")
+        }
+        else {
+            window.decorView.setBackgroundColor(darkBackground)
+            cv1.setCardBackgroundColor(darkCardView)
+            cv2.setCardBackgroundColor(darkCardView)
+            cv3.setCardBackgroundColor(darkCardView)
+            cv4.setCardBackgroundColor(darkCardView)
+            cv5.setCardBackgroundColor(darkCardView)
+            cv6.setCardBackgroundColor(darkCardView)
+            Log.d("homeActivityColor", "어두워ㅜ")
+        }
     }
 
     @SuppressLint("SetTextI18n")
