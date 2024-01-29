@@ -49,7 +49,7 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
 
         for(r in 0 .. result.size -1 ){
 
-            bookmarkList.add(BookmarkDataModel(result[r].id, result[r].location.slice(0..result[r].location.indexOf(" ")-1), result[r].location.slice(result[r].location.indexOf(" ")+1..result[r].location.length-1),"60", "127", "11B00000", "11B10101"))
+            bookmarkList.add(BookmarkDataModel(result[r].id, result[r].location.slice(0..result[r].location.indexOf(" ")-1), result[r].location.slice(result[r].location.indexOf(" ")+1..result[r].location.length-1), result[r].nx, result[r].ny, result[r].landArea, result[r].tempArea))
 
         }
 
