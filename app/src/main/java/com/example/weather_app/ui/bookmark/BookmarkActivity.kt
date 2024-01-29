@@ -79,6 +79,7 @@ class BookmarkActivity : AppCompatActivity() {
 
     private fun initView() = with(binding) {
 
+        //스와이프 코드
         var itemTouchHelper = ItemTouchHelper(SwipeToDelete(listAdapter, this@BookmarkActivity))
         itemTouchHelper.attachToRecyclerView(bookmarkRv)
 
@@ -132,8 +133,6 @@ class BookmarkActivity : AppCompatActivity() {
 
         searchListAdapter.setOnItemClickListener(object : BookmarkSearchListAdapter.OnItemClickListener{
             override fun onItemClick(item: BookmarkDataModel, position: Int) {
-                Toast.makeText(this@BookmarkActivity, item.toString(), Toast.LENGTH_SHORT).show()
-
                 addBoardLauncher.launch(detailIntent(this@BookmarkActivity, item))
                 bookmarkSearchbar.closeSearch()
             }

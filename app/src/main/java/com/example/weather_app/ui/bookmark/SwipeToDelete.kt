@@ -20,11 +20,16 @@ class SwipeToDelete(var adapter: BookmarkListAdapter, val context : ViewModelSto
         return false
     }
 
+    //스와이프 동작
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
         var pos = viewHolder.adapterPosition
         val item = adapter.getItem(pos)
+
+        //Room 데이터 삭제
         bookmarkViewModel.deleteData(item.id, item.Dong, item.nx, item.ny, item.landArea, item.tempArea)
 
+        //스와이프 layout 원래대로 돌려놓기
         val view = (viewHolder as BookmarkListAdapter.ViewHolder).swipeLayout
         view.animate().translationX(0f).setDuration(300).start()
     }
@@ -35,10 +40,10 @@ class SwipeToDelete(var adapter: BookmarkListAdapter, val context : ViewModelSto
         dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean
     ) {
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+
             val view = (viewHolder as BookmarkListAdapter.ViewHolder).swipeLayout
 
             view.translationX = dX
-
             getDefaultUIUtil().onDraw(c, recyclerView, view, dX, dY, actionState, isCurrentlyActive)
         }
     }
