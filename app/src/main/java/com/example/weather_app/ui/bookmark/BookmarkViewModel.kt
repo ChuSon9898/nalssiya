@@ -41,6 +41,7 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
         getSearchData()
     }
 
+    //Room 데이터 전체 가져오기
     fun getAllData() = viewModelScope.launch(Dispatchers.IO) {
 
         val result = repository.getListAll()
@@ -56,6 +57,7 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
         _bookmarkList.postValue(bookmarkList)
     }
 
+    //weatherdata 파일에서 데이터 가져오기
     fun getSearchData(){
 
         var searchData : MutableList<BookmarkDataModel> = mutableListOf()
@@ -79,6 +81,7 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
         totalSearchList.addAll(searchData)
     }
 
+    //검색 데이터 서치하는 함수
     fun searchLocation(s: CharSequence?){
         if (s == null || s.isEmpty()) {
 
@@ -102,11 +105,13 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
 
     }
 
+    //Room 데이터 넣는 함수
     fun insertData(location: String, nx: String, ny: String, landArea: String, tempArea: String) = viewModelScope.launch(Dispatchers.IO) {
         repository.insertData(location, nx, ny, landArea, tempArea)
         getAllData()
     }
 
+    //Room 데이터 삭제하는 함수
     fun deleteData(id: Int, location: String, nx: String, ny: String, landArea: String, tempArea: String) = viewModelScope.launch(Dispatchers.IO) {
         repository.deleteData(id, location, nx, ny, landArea, tempArea)
         getAllData()
