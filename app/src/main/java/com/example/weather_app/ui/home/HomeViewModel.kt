@@ -123,7 +123,7 @@ class HomeViewModel(
     }
 
     //최근 3일(오늘, 내일, 모레) 날씨 데이터를 불러오는 함수
-    fun getDailyWeather(nx: String, ny: String) {
+    fun getDailyWeather(nx: String, ny: String, tempArea: String, landArea: String) {
         viewModelScope.launch {
             val dailyWeatherList = mutableListOf<DailyDataModel>()
             val response = hourlyRepository.getHourlyData(
@@ -179,9 +179,9 @@ class HomeViewModel(
             
             //3일~10일 날씨 데이터를 불러오는 코드 (임시 지역 코드, 수정 필요)
             val tempResponse =
-                dailyTempRepository.getDailyTempData(10, 1, "11B10101", getTmFc(currentTime, currentDateTime))
+                dailyTempRepository.getDailyTempData(10, 1, tempArea, getTmFc(currentTime, currentDateTime))
             val weatherResponse =
-                dailyWeatherRepository.getDailyWeatherData(10, 1, "11B00000", getTmFc(currentTime, currentDateTime))
+                dailyWeatherRepository.getDailyWeatherData(10, 1, landArea, getTmFc(currentTime, currentDateTime))
 
             val tempList = tempResponse.body()?.response!!.body.items.item
             val weatherList = weatherResponse.body()?.response!!.body.items.item
