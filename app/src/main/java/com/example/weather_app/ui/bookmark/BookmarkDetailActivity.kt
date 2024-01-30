@@ -132,7 +132,7 @@ class BookmarkDetailActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     private fun initViewModel() = with(homeViewModel) {
         getHourlyWeather(item!!.nx, item!!.ny)
-        getDailyWeather(item!!.nx, item!!.ny)
+        getDailyWeather(item!!.nx, item!!.ny, item!!.tempArea, item!!.landArea)
 
         hourlyList.observe(this@BookmarkDetailActivity, Observer { hourlyList ->
             hourlyAdapter.submitList(hourlyList)
