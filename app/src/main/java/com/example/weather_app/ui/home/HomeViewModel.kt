@@ -12,6 +12,7 @@ import com.example.weather_app.data.model.HourlyWeather
 import com.example.weather_app.data.retrofit.DailyTempRepository
 import com.example.weather_app.data.retrofit.DailyWeatherRepository
 import com.example.weather_app.data.retrofit.HourlyRepository
+import com.example.weather_app.util.Utils
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -63,12 +64,12 @@ class HomeViewModel(
             val response = hourlyRepository.getHourlyData(
                 500,
                 1,
-                getBaseDate(currentDateTime),
-                getBaseTime(currentTime),
+                Utils.getBaseDate(currentDateTime),
+                Utils.getBaseTime(currentTime),
                 nx,
                 ny
             )
-            Log.d("ViewModel", "${getBaseDate(currentDateTime)}, ${getBaseTime(currentTime)}")
+            Log.d("ViewModel", "${Utils.getBaseDate(currentDateTime)}, ${Utils.getBaseTime(currentTime)}")
             val list = response.body()?.response!!.body.items.item
             val groupedData = mutableMapOf<Pair<String, String>, MutableList<HourlyWeather.Item>>()
 
@@ -265,66 +266,6 @@ class HomeViewModel(
         }
 
         return weatherList.toList()
-    }
-
-    //단기예보 BaseTime 계산 함수
-    private fun getBaseTime(time: LocalTime): String {
-        var baseTime = ""
-        if (!time.isBefore(LocalTime.of(3, 0)) && time.isBefore(LocalTime.of(6, 0))) baseTime =
-            "0200"
-        else if (!time.isBefore(LocalTime.of(6, 0)) && time.isBefore(LocalTime.of(9, 0))) baseTime =
-            "0500"
-        else if (!time.isBefore(LocalTime.of(9, 0)) && time.isBefore(
-                LocalTime.of(
-                    12,
-                    0
-                )
-            )
-        ) baseTime = "0800"
-        else if (!time.isBefore(LocalTime.of(12, 0)) && time.isBefore(
-                LocalTime.of(
-                    15,
-                    0
-                )
-            )
-        ) baseTime = "1100"
-        else if (!time.isBefore(LocalTime.of(15, 0)) && time.isBefore(
-                LocalTime.of(
-                    18,
-                    0
-                )
-            )
-        ) baseTime = "1400"
-        else if (!time.isBefore(LocalTime.of(18, 0)) && time.isBefore(
-                LocalTime.of(
-                    21,
-                    0
-                )
-            )
-        ) baseTime = "1700"
-        else if (!time.isBefore(LocalTime.of(21, 0)) && time.isBefore(
-                LocalTime.of(
-                    23,
-                    59,
-                    59,
-                )
-            )
-        ) baseTime = "2000"
-        else if (!time.isBefore(LocalTime.of(0, 0)) && time.isBefore(
-                LocalTime.of(
-                    3,
-                    0
-                )
-            )
-        ) baseTime = "2300"
-
-        return baseTime
-    }
-
-    //단기예보 BaseDate 계산 함수
-    private fun getBaseDate(time: LocalDateTime): Int {
-        return if (time.hour in 0 until 3) time.minusDays(1).format(formatter2).toInt()
-        else time.format(formatter2).toInt()
     }
 
     //중기예보 예보시간 계산 함수(tmFc)
