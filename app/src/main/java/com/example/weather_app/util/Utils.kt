@@ -45,59 +45,22 @@ object Utils {
     //단기예보 BaseTime 계산 함수
     fun getBaseTime(time: LocalTime): String {
         var baseTime = ""
-        if (!time.isBefore(LocalTime.of(3, 0)) && time.isBefore(LocalTime.of(6, 0))) baseTime =
-            "0200"
-        else if (!time.isBefore(LocalTime.of(6, 0)) && time.isBefore(
-                LocalTime.of(
-                    9,
-                    0
-                )
-            )
-        ) baseTime =
-            "0500"
-        else if (!time.isBefore(LocalTime.of(9, 0)) && time.isBefore(
-                LocalTime.of(
-                    12,
-                    0
-                )
-            )
-        ) baseTime = "0800"
-        else if (!time.isBefore(LocalTime.of(12, 0)) && time.isBefore(
-                LocalTime.of(
-                    15,
-                    0
-                )
-            )
-        ) baseTime = "1100"
-        else if (!time.isBefore(LocalTime.of(15, 0)) && time.isBefore(
-                LocalTime.of(
-                    18,
-                    0
-                )
-            )
-        ) baseTime = "1400"
-        else if (!time.isBefore(LocalTime.of(18, 0)) && time.isBefore(
-                LocalTime.of(
-                    21,
-                    0
-                )
-            )
-        ) baseTime = "1700"
-        else if (!time.isBefore(LocalTime.of(21, 0)) && time.isBefore(
-                LocalTime.of(
-                    23,
-                    59,
-                    59,
-                )
-            )
-        ) baseTime = "2000"
-        else if (!time.isBefore(LocalTime.of(0, 0)) && time.isBefore(
-                LocalTime.of(
-                    3,
-                    0
-                )
-            )
-        ) baseTime = "2300"
+        if (!time.isBefore(LocalTime.of(3, 0)) && time.isBefore(LocalTime.of(6, 0)))
+            baseTime = "0200"
+        else if (!time.isBefore(LocalTime.of(6, 0)) && time.isBefore(LocalTime.of(9, 0)))
+            baseTime = "0500"
+        else if (!time.isBefore(LocalTime.of(9, 0)) && time.isBefore(LocalTime.of(12, 0)))
+            baseTime = "0800"
+        else if (!time.isBefore(LocalTime.of(12, 0)) && time.isBefore(LocalTime.of(15, 0)))
+            baseTime = "1100"
+        else if (!time.isBefore(LocalTime.of(15, 0)) && time.isBefore(LocalTime.of(18, 0)))
+            baseTime = "1400"
+        else if (!time.isBefore(LocalTime.of(18, 0)) && time.isBefore(LocalTime.of(21, 0)))
+            baseTime = "1700"
+        else if (!time.isBefore(LocalTime.of(21, 0)) && time.isBefore(LocalTime.of(23, 59, 59)))
+            baseTime = "2000"
+        else if (!time.isBefore(LocalTime.of(0, 0)) && time.isBefore(LocalTime.of(3, 0)))
+            baseTime = "2300"
 
         return baseTime
     }
