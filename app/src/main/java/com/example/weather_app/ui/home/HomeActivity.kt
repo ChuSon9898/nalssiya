@@ -22,6 +22,7 @@ import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.example.weather_app.ui.bookmark.BookmarkActivity.Companion.bookmarkIndent
 import com.example.weather_app.ui.bookmark.BookmarkDetailActivity
 import com.example.weather_app.ui.bookmark.BookmarkDetailActivity.Companion.detailIntent
+import com.example.weather_app.util.Utils
 import java.io.IOException
 import java.time.LocalTime
 import java.util.Locale
@@ -49,6 +50,8 @@ open class HomeActivity : AppCompatActivity() {
     //기본 위치 좌표 (서울시청)
     private var latitude = 37.564214
     private var longitude = 127.001699
+    private var tempArea = "11B10101"
+    private var landArea = "11B00000"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,9 +106,9 @@ open class HomeActivity : AppCompatActivity() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun initViewModel(point: Point) = with(viewModel) {
+    private fun initViewModel(point: Point, tempArea: String, landArea: String) = with(viewModel) {
         getHourlyWeather(point.x.toString(), point.y.toString())
-        getDailyWeather(point.x.toString(), point.y.toString())
+        getDailyWeather(point.x.toString(), point.y.toString(), tempArea, landArea)
 
         hourlyList.observe(this@HomeActivity, Observer { hourlyList ->
             hourlyAdapter.submitList(hourlyList)
@@ -174,14 +177,22 @@ open class HomeActivity : AppCompatActivity() {
                 success?.let { location ->
                     latitude = location.latitude
                     longitude = location.longitude
-                    initViewModel(dfsXyConv(latitude, longitude))
+
                     Log.d("HomeActivity", "성공")
                     val address = getAddress(latitude, longitude)?.get(0)
+
+                    Utils.getCsvData(this).first { it.Gu == address!!.getAddressLine(0).split(" ")[1] && it.Dong.contains(address!!.getAddressLine(0).split(" ")[2]) }.apply {
+                        this@HomeActivity.tempArea = this.tempArea
+                        this@HomeActivity.landArea = this.landArea
+
+                    }
+                    initViewModel(dfsXyConv(latitude, longitude), tempArea, landArea)
+                    Log.d("MyLocation", "${latitude}, ${longitude}. ${tempArea}, ${landArea}")
                     Log.d("HomeActivity", address.toString())
+                    Log.d("CSV", Utils.getCsvData(this).toString())
                 }
             }
             .addOnFailureListener { fail ->
-                initViewModel(dfsXyConv(latitude, longitude))
                 Log.d("Location", "실패")
                 Toast.makeText(this, "위치를 조회할 수 없습니다", Toast.LENGTH_LONG).show()
             }
