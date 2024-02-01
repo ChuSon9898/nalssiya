@@ -161,8 +161,8 @@ open class HomeActivity : AppCompatActivity() {
 
         currentWeather2.observe(this@HomeActivity, Observer {weather ->
             with(binding) {
-                tvMaxtemp.text = "최고:${weather.maxTemp}°"
-                tvMintemp.text = "최저:${weather.minTemp}°"
+                tvMaxtemp.text = "최고 : ${weather.maxTemp}°"
+                tvMintemp.text = "최저 : ${weather.minTemp}°"
             }
         })
     }
