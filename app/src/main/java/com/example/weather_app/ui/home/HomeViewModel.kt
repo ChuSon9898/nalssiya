@@ -259,7 +259,8 @@ class HomeViewModel(
                     .maxBy { it.value.size }
                     .key
                 when (maxType) {
-                    "1", "2", "4" -> weatherList.add("비")
+                    "1", "4" -> weatherList.add("비")
+                    "2" -> weatherList.add("눈비")
                     "3" -> weatherList.add("눈")
                 }
             }

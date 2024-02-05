@@ -57,6 +57,7 @@ class DailyListAdapter () : ListAdapter<DailyDataModel, DailyListAdapter.ViewHol
                 "맑음" -> ivWeather.load(R.drawable.ic_sun)
                 "대체로 흐림" -> ivWeather.load(R.drawable.ic_sun_and_cloud)
                 "흐림" -> ivWeather.load(R.drawable.ic_cloud)
+                "눈비" -> ivWeather.load(R.drawable.ic_snow_rain)
                 "비" -> ivWeather.load(R.drawable.ic_rain)
                 "눈" -> ivWeather.load(R.drawable.ic_snow)
             }

@@ -59,7 +59,8 @@ class HourlyListAdapter () : ListAdapter<HourlyDataModel, HourlyListAdapter.View
                         4 -> ivWeather.load(R.drawable.ic_cloud)
                     }
                 }
-                in 1..2, 4 -> ivWeather.load(R.drawable.ic_rain)
+                1, 4 -> ivWeather.load(R.drawable.ic_rain)
+                2 -> ivWeather.load(R.drawable.ic_snow_rain)
                 3 -> ivWeather.load(R.drawable.ic_snow)
             }
             tvTemp.text = item.temp + "°"
