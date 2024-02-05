@@ -14,14 +14,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.example.weather_app.R
 import com.example.weather_app.databinding.HomeActivityBinding
 import com.example.weather_app.util.RequestPermissionsUtil
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.example.weather_app.ui.bookmark.BookmarkActivity.Companion.bookmarkIndent
-import com.example.weather_app.ui.bookmark.BookmarkDetailActivity
-import com.example.weather_app.ui.bookmark.BookmarkDetailActivity.Companion.detailIntent
+import com.example.weather_app.util.NotificationWorkManager
+import com.example.weather_app.util.RetrofitWorkManager
 import com.example.weather_app.util.Utils
 import java.io.IOException
 import java.time.LocalTime
@@ -128,7 +132,8 @@ open class HomeActivity : AppCompatActivity() {
                             4 -> tvWeather.text = "흐림"
                         }
                     }
-                    in 1..2, 4 -> tvWeather.text = "비"
+                    1, 4 -> tvWeather.text = "비"
+                    2 -> tvWeather.text = "눈/비"
                     3 -> tvWeather.text = "눈"
                 }
 
@@ -190,6 +195,21 @@ open class HomeActivity : AppCompatActivity() {
                     Log.d("MyLocation", "${latitude}, ${longitude}. ${tempArea}, ${landArea}")
                     Log.d("HomeActivity", address.toString())
                     Log.d("CSV", Utils.getCsvData(this).toString())
+
+                    val locationData : Data = workDataOf(
+                        "nx" to dfsXyConv(latitude, longitude).x,
+                        "ny" to dfsXyConv(latitude, longitude).y
+                    )
+
+                    //Background 작업을 위한 WorkManager (Retrofit, Notification)
+                    val retrofitWorkManager = OneTimeWorkRequestBuilder<RetrofitWorkManager>().setInputData(locationData).build()
+                    val notificationWorkManager = OneTimeWorkRequestBuilder<NotificationWorkManager>().build()
+
+                    //Retrofit 워크매니저 실행 후 날씨 데이터 Notification 워크 매니저로 전달 및 정해진 시간에 알림 실행
+                    WorkManager.getInstance(this)
+                        .beginWith(retrofitWorkManager)
+                        .then(notificationWorkManager)
+                        .enqueue()
                 }
             }
             .addOnFailureListener { fail ->
