@@ -16,8 +16,6 @@ class RetrofitWorkManager(
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
-        delay(5000)
-
         val nx = inputData.getString("nx") ?: "55"
         val ny = inputData.getString("ny") ?: "127"
 
@@ -60,9 +58,10 @@ class RetrofitWorkManager(
         }
 
         val outputData = Data.Builder()
-            .putStringArray("weatherData", arrayOf(weather, minTemp, maxTemp))
+            .putStringArray("weatherData", arrayOf(weather, minTemp, maxTemp, nx, ny))
             .build()
 
+        Log.d("RetrofitWorkManager", "${nx}, ${ny}")
         Log.d("RetrofitWorkManager", "${weather}, ${minTemp}, ${maxTemp}")
 
         return Result.success(outputData)
