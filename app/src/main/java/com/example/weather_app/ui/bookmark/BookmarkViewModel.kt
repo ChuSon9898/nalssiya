@@ -9,16 +9,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.weather_app.data.model.BookmarkDataModel
-import com.example.weather_app.data.room.BookmarkDatabase
-import com.example.weather_app.data.room.Repository
+import com.example.weather_app.data.room.BookmarkRepository
 import com.example.weather_app.util.Utils
-import com.opencsv.CSVReader
-import com.opencsv.exceptions.CsvException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.IOException
-import java.io.InputStream
-import java.io.InputStreamReader
 
 
 class BookmarkViewModel(application: Application) : AndroidViewModel(application) {
@@ -36,7 +30,7 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
 
     val totalSearchList: MutableList<BookmarkDataModel> = mutableListOf()
 
-    val repository = Repository(context)
+    val bookmarkRepository = BookmarkRepository(context)
 
     init {
         getAllData()
@@ -46,7 +40,7 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
     //Room 데이터 전체 가져오기
     fun getAllData() = viewModelScope.launch(Dispatchers.IO) {
 
-        val result = repository.getListAll()
+        val result = bookmarkRepository.getListAll()
 
         val bookmarkList: MutableList<BookmarkDataModel> = mutableListOf()
 
@@ -107,7 +101,7 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
     //Room 데이터 넣는 함수
     fun insertData(location: String, nx: String, ny: String, landArea: String, tempArea: String) =
         viewModelScope.launch(Dispatchers.IO) {
-            repository.insertData(location, nx, ny, landArea, tempArea)
+            bookmarkRepository.insertData(location, nx, ny, landArea, tempArea)
             getAllData()
         }
 
@@ -120,7 +114,7 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
         landArea: String,
         tempArea: String
     ) = viewModelScope.launch(Dispatchers.IO) {
-        repository.deleteData(id, location, nx, ny, landArea, tempArea)
+        bookmarkRepository.deleteData(id, location, nx, ny, landArea, tempArea)
         getAllData()
     }
 

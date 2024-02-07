@@ -5,17 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weather_app.R
 import com.example.weather_app.data.model.BookmarkDataModel
-import com.example.weather_app.data.room.Repository
+import com.example.weather_app.data.room.BookmarkRepository
 import com.example.weather_app.databinding.HomeActivityBinding
 import com.example.weather_app.ui.home.DailyListAdapter
 import com.example.weather_app.ui.home.HomeViewModel
@@ -80,7 +78,7 @@ class BookmarkDetailActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
 
-            val addBookmark = Repository(applicationContext).getDatabylocation(item!!.Gu + " " + item!!.Dong)
+            val addBookmark = BookmarkRepository(applicationContext).getDatabylocation(item!!.Gu + " " + item!!.Dong)
 
             if(addBookmark.isNotEmpty()){
                 tvAdd.visibility = View.INVISIBLE

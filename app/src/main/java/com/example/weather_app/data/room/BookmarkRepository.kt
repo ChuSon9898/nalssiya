@@ -2,7 +2,7 @@ package com.example.weather_app.data.room
 
 import android.content.Context
 
-class Repository(context: Context) {
+class BookmarkRepository(context: Context) {
 
     val db = BookmarkDatabase.getDatabase(context)
 
