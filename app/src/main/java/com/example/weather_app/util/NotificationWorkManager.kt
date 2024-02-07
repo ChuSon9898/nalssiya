@@ -2,7 +2,9 @@ package com.example.weather_app.util
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -16,6 +18,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.example.weather_app.R
+import com.example.weather_app.ui.home.HomeActivity
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
@@ -42,11 +45,16 @@ class NotificationWorkManager(context: Context, params: WorkerParameters) : Work
             notificationManager.createNotificationChannel(notificationChannel)
         }
 
+        val intent = Intent(applicationContext, HomeActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
         val notificationBuilder = NotificationCompat.Builder(applicationContext, notificationChannelId)
             .setContentTitle("오늘의 날씨 : $weather")
             .setContentText("최고 : ${maxTemp}° 최저 : ${minTemp}°")
             .setSmallIcon(R.drawable.ic_sun_and_cloud)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent)
 
         notificationManager.notify(notificationId, notificationBuilder.build())
 
