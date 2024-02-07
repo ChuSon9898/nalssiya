@@ -275,7 +275,7 @@ open class HomeActivity : AppCompatActivity() {
         //Background 작업을 위한 WorkManager (Retrofit, Notification)
         val retrofitWorkManager = OneTimeWorkRequestBuilder<RetrofitWorkManager>()
             .setInputData(locationData)
-            .setInitialDelay(getCertainTime(), TimeUnit.MILLISECONDS)   //해당 시간만큼 딜레이
+//            .setInitialDelay(getCertainTime(), TimeUnit.MILLISECONDS)   //해당 시간만큼 딜레이
             .setConstraints(constraints)
             .build()
 
@@ -293,8 +293,8 @@ open class HomeActivity : AppCompatActivity() {
         val currentDate = Calendar.getInstance()
 
         val dueDate = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 7)
-            set(Calendar.MINUTE, 0)
+            set(Calendar.HOUR_OF_DAY, 20)
+            set(Calendar.MINUTE, 9)
             set(Calendar.SECOND, 0)
         }
 
