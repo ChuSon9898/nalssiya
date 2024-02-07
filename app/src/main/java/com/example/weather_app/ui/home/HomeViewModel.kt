@@ -161,8 +161,8 @@ class HomeViewModel(
             }
 
             //최근 3일간 최소, 최대 온도 데이터
-            val minTempList = list.filter { it.category == "TMN" }.map { it.fcstValue }
-            val maxTempList = list.filter { it.category == "TMX" }.map { it.fcstValue }
+            val minTempList = list.filter { it.category == "TMN" }.map { it.fcstValue.toDouble().toInt() }
+            val maxTempList = list.filter { it.category == "TMX" }.map { it.fcstValue.toDouble().toInt() }
 
             //최근 3일간 날씨 데이터 생성
             for (i in 0..2) {
@@ -171,8 +171,8 @@ class HomeViewModel(
                         convertDay(currentDateTime.plusDays(i.toLong())),
                         currentDateTime.plusDays(i.toLong()).format(formatter4),
                         representWeather(tempDaily)[i],
-                        maxTempList[i],
-                        minTempList[i]
+                        maxTempList[i].toString(),
+                        minTempList[i].toString()
                     )
                 )
 
@@ -259,7 +259,8 @@ class HomeViewModel(
                     .maxBy { it.value.size }
                     .key
                 when (maxType) {
-                    "1", "2", "4" -> weatherList.add("비")
+                    "1", "4" -> weatherList.add("비")
+                    "2" -> weatherList.add("눈비")
                     "3" -> weatherList.add("눈")
                 }
             }

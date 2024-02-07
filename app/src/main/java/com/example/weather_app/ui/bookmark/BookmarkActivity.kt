@@ -9,7 +9,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -78,7 +77,6 @@ class BookmarkActivity : AppCompatActivity() {
     }
 
     private fun initView() = with(binding) {
-
         //스와이프 코드
         var itemTouchHelper = ItemTouchHelper(SwipeToDelete(listAdapter, this@BookmarkActivity))
         itemTouchHelper.attachToRecyclerView(bookmarkRv)

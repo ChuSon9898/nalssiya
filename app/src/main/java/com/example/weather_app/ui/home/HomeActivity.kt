@@ -14,18 +14,28 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.example.weather_app.R
 import com.example.weather_app.databinding.HomeActivityBinding
 import com.example.weather_app.util.RequestPermissionsUtil
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.example.weather_app.ui.bookmark.BookmarkActivity.Companion.bookmarkIndent
-import com.example.weather_app.ui.bookmark.BookmarkDetailActivity
-import com.example.weather_app.ui.bookmark.BookmarkDetailActivity.Companion.detailIntent
+import com.example.weather_app.util.NotificationWorkManager
+import com.example.weather_app.util.RetrofitWorkManager
 import com.example.weather_app.util.Utils
 import java.io.IOException
 import java.time.LocalTime
+import java.util.Calendar
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 open class HomeActivity : AppCompatActivity() {
     //앱 실행 시, 위치 권한 묻기
@@ -91,7 +101,6 @@ open class HomeActivity : AppCompatActivity() {
             cv4.setCardBackgroundColor(lightCardView)
             cv5.setCardBackgroundColor(lightCardView)
             cv6.setCardBackgroundColor(lightCardView)
-            Log.d("homeActivityColor", "밝아ㅎ")
         }
         else {
             window.decorView.setBackgroundColor(darkBackground)
@@ -101,7 +110,6 @@ open class HomeActivity : AppCompatActivity() {
             cv4.setCardBackgroundColor(darkCardView)
             cv5.setCardBackgroundColor(darkCardView)
             cv6.setCardBackgroundColor(darkCardView)
-            Log.d("homeActivityColor", "어두워ㅜ")
         }
     }
 
@@ -128,7 +136,8 @@ open class HomeActivity : AppCompatActivity() {
                             4 -> tvWeather.text = "흐림"
                         }
                     }
-                    in 1..2, 4 -> tvWeather.text = "비"
+                    1, 4 -> tvWeather.text = "비"
+                    2 -> tvWeather.text = "눈/비"
                     3 -> tvWeather.text = "눈"
                 }
 
@@ -161,8 +170,8 @@ open class HomeActivity : AppCompatActivity() {
 
         currentWeather2.observe(this@HomeActivity, Observer {weather ->
             with(binding) {
-                tvMaxtemp.text = "최고:${weather.maxTemp}°"
-                tvMintemp.text = "최저:${weather.minTemp}°"
+                tvMaxtemp.text = "최고 : ${weather.maxTemp}°"
+                tvMintemp.text = "최저 : ${weather.minTemp}°"
             }
         })
     }
@@ -190,6 +199,14 @@ open class HomeActivity : AppCompatActivity() {
                     Log.d("MyLocation", "${latitude}, ${longitude}. ${tempArea}, ${landArea}")
                     Log.d("HomeActivity", address.toString())
                     Log.d("CSV", Utils.getCsvData(this).toString())
+
+                    val locationData : Data = workDataOf(
+                        "nx" to dfsXyConv(latitude, longitude).x.toString(),
+                        "ny" to dfsXyConv(latitude, longitude).y.toString()
+                    )
+
+                    //WorkManager 실행
+                    createWorkManager(locationData)
                 }
             }
             .addOnFailureListener { fail ->
@@ -247,5 +264,43 @@ open class HomeActivity : AppCompatActivity() {
             Toast.makeText(this, "주소를 가져 올 수 없습니다", Toast.LENGTH_SHORT).show()
             null
         }
+    }
+
+    private fun createWorkManager(locationData: Data) {
+        //제약조건
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        //Background 작업을 위한 WorkManager (Retrofit, Notification)
+        val retrofitWorkManager = OneTimeWorkRequestBuilder<RetrofitWorkManager>()
+            .setInputData(locationData)
+            .setInitialDelay(getCertainTime(), TimeUnit.MILLISECONDS)   //해당 시간만큼 딜레이
+            .setConstraints(constraints)
+            .build()
+
+        val notificationWorkManager = OneTimeWorkRequestBuilder<NotificationWorkManager>().build()
+
+        //Retrofit WorkManager 실행 후 날씨 데이터 Notification WorkManager로 전달 및 정해진 시간에 알림 실행
+        WorkManager.getInstance(this)
+            .beginUniqueWork("work", ExistingWorkPolicy.REPLACE, retrofitWorkManager)
+            .then(notificationWorkManager)
+            .enqueue()
+    }
+
+    //아침 7시까지 남은 시간 계산 함수
+    private fun getCertainTime(): Long {
+        val currentDate = Calendar.getInstance()
+
+        val dueDate = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 7)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+        }
+
+        if (dueDate.before(currentDate))
+            dueDate.add(Calendar.HOUR_OF_DAY, 24)
+
+        return dueDate.timeInMillis - currentDate.timeInMillis
     }
 }

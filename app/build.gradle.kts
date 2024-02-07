@@ -91,5 +91,6 @@ dependencies {
     //opencsv
     implementation("com.opencsv:opencsv:5.6")
 
-
+    //WorkManager
+    implementation("androidx.work:work-runtime:2.9.0")
 }
