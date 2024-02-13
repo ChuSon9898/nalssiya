@@ -75,25 +75,6 @@ class BookmarkListAdapter :
         @SuppressLint("SetTextI18n")
         fun bind(bookmarkItem: BookmarkDataModel) {
             with(binding) {
-                val currentTime = LocalTime.now()
-
-                if (!currentTime.isBefore(LocalTime.of(6, 0)) && currentTime.isBefore(LocalTime.of(18, 0))) {
-                    cardViewLayout.setBackgroundColor(
-                        ContextCompat.getColor(
-                            root.context,
-                            R.color.light_blue
-                        )
-                    )
-                }
-                else {
-                    cardViewLayout.setBackgroundColor(
-                        ContextCompat.getColor(
-                            root.context,
-                            R.color.dark_blue
-                        )
-                    )
-                }
-
                 if (bookmarkItem.Dong.isEmpty()) {
                     bookmarkTvLocation.text = bookmarkItem.Gu
                 } else {
