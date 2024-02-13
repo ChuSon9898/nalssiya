@@ -17,8 +17,7 @@
             android:layout_height="match_parent"
             app:cardCornerRadius="20dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_percent="0.3"
-            android:backgroundTint="@color/red">
+            app:layout_constraintWidth_percent="0.3">
 
             <ImageView
                 android:layout_width="28dp"
