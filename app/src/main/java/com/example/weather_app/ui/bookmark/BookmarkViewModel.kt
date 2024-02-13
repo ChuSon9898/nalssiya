@@ -9,28 +9,27 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.weather_app.data.model.BookmarkDataModel
-import com.example.weather_app.data.room.BookmarkRepository
+import com.example.weather_app.data.room.BookmarkDatabase
+import com.example.weather_app.data.repository.room.BookmarkRepositoryImpl
 import com.example.weather_app.util.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class BookmarkViewModel(application: Application) : AndroidViewModel(application) {
+class BookmarkViewModel(private val bookmarkRepository : BookmarkRepositoryImpl, application: Application) : AndroidViewModel(application) {
 
     @SuppressLint("StaticFieldLeak")
-    val context = getApplication<Application>().applicationContext
+    private val context = getApplication<Application>().applicationContext
+
+    private val db = BookmarkDatabase.getDatabase(context)
 
     private val _bookmarkList = MutableLiveData<MutableList<BookmarkDataModel>>()
-    val bookmarkList: LiveData<MutableList<BookmarkDataModel>>
-        get() = _bookmarkList
+    val bookmarkList: LiveData<MutableList<BookmarkDataModel>> get() = _bookmarkList
 
     private val _searchList = MutableLiveData<MutableList<BookmarkDataModel>>()
-    val searchList: LiveData<MutableList<BookmarkDataModel>>
-        get() = _searchList
+    val searchList: LiveData<MutableList<BookmarkDataModel>> get() = _searchList
 
-    val totalSearchList: MutableList<BookmarkDataModel> = mutableListOf()
-
-    val bookmarkRepository = BookmarkRepository(context)
+    private val totalSearchList: MutableList<BookmarkDataModel> = mutableListOf()
 
     init {
         getAllData()
@@ -40,7 +39,7 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
     //Room 데이터 전체 가져오기
     fun getAllData() = viewModelScope.launch(Dispatchers.IO) {
 
-        val result = bookmarkRepository.getListAll()
+        val result = bookmarkRepository.getListAll(db)
 
         val bookmarkList: MutableList<BookmarkDataModel> = mutableListOf()
 
@@ -101,7 +100,7 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
     //Room 데이터 넣는 함수
     fun insertData(location: String, nx: String, ny: String, landArea: String, tempArea: String) =
         viewModelScope.launch(Dispatchers.IO) {
-            bookmarkRepository.insertData(location, nx, ny, landArea, tempArea)
+            bookmarkRepository.insertData(db, location, nx, ny, landArea, tempArea)
             getAllData()
         }
 
@@ -114,18 +113,7 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
         landArea: String,
         tempArea: String
     ) = viewModelScope.launch(Dispatchers.IO) {
-        bookmarkRepository.deleteData(id, location, nx, ny, landArea, tempArea)
+        bookmarkRepository.deleteData(db, id, location, nx, ny, landArea, tempArea)
         getAllData()
-    }
-
-}
-
-class BookmarkViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(BookmarkViewModel::class.java)) {
-            return BookmarkViewModel(application) as T
-        } else {
-            throw IllegalArgumentException("Not found ViewModel class.")
-        }
     }
 }

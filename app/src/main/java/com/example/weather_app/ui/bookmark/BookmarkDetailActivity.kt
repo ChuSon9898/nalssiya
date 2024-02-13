@@ -13,7 +13,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weather_app.R
 import com.example.weather_app.data.model.BookmarkDataModel
-import com.example.weather_app.data.room.BookmarkRepository
+import com.example.weather_app.data.room.BookmarkDatabase
+import com.example.weather_app.data.repository.room.BookmarkRepositoryImpl
 import com.example.weather_app.databinding.HomeActivityBinding
 import com.example.weather_app.ui.home.DailyListAdapter
 import com.example.weather_app.ui.home.HomeViewModel
@@ -37,6 +38,8 @@ class BookmarkDetailActivity : AppCompatActivity() {
     private val dailyAdapter by lazy {
         DailyListAdapter()
     }
+
+    private val db = BookmarkDatabase.getDatabase(this)
 
     companion object {
         const val OBJECT_DATA = "item_object"
@@ -78,7 +81,7 @@ class BookmarkDetailActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
 
-            val addBookmark = BookmarkRepository(applicationContext).getDatabylocation(item!!.Gu + " " + item!!.Dong)
+            val addBookmark = BookmarkRepositoryImpl().getDataByLocation(db,item!!.Gu + " " + item!!.Dong)
 
             if(addBookmark.isNotEmpty()){
                 tvAdd.visibility = View.INVISIBLE
