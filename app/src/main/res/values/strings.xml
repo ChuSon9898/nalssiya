@@ -36,4 +36,12 @@
 
     <!-- bookmark_activity.xml -->
     <string name="search_message">도시 또는 공항 검색</string>
+
+    <!-- bookmark_rv_item.xml -->
+    <string name="bookmark_rv_item_location">동작구</string>
+    <string name="bookmark_rv_item_temp">0°</string>
+    <string name="bookmark_rv_item_title_maxTemp">최고</string>
+    <string name="bookmark_rv_item_maxTemp">4°</string>
+    <string name="bookmark_rv_item_title_minTemp">최저</string>
+    <string name="bookmark_rv_item_minTemp">-5°</string>
 </resources>
