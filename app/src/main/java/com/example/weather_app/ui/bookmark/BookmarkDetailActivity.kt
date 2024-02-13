@@ -69,6 +69,9 @@ class BookmarkDetailActivity : AppCompatActivity() {
     }
 
     private fun initView() = with(binding) {
+        pbHourly.visibility = View.VISIBLE
+        pbDaily.visibility = View.VISIBLE
+
         rvHourly.adapter = hourlyAdapter
         rvDaily.adapter = dailyAdapter
 
@@ -111,9 +114,11 @@ class BookmarkDetailActivity : AppCompatActivity() {
 
         hourlyList.observe(this@BookmarkDetailActivity, Observer { hourlyList ->
             hourlyAdapter.submitList(hourlyList)
+            binding.pbHourly.visibility = View.GONE
         })
-        dailyList.observe(this@BookmarkDetailActivity, Observer { threeDayList ->
-            dailyAdapter.submitList(threeDayList)
+        dailyList.observe(this@BookmarkDetailActivity, Observer { dailyList ->
+            dailyAdapter.submitList(dailyList)
+            binding.pbDaily.visibility = View.GONE
         })
         currentWeather.observe(this@BookmarkDetailActivity, Observer { weather ->
             with(binding) {

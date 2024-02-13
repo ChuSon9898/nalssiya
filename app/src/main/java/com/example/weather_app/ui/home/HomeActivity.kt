@@ -73,6 +73,9 @@ open class HomeActivity : AppCompatActivity() {
     }
 
     private fun initView() = with(binding) {
+        pbHourly.visibility = View.VISIBLE
+        pbDaily.visibility = View.VISIBLE
+
         rvHourly.adapter = hourlyAdapter
         rvDaily.adapter = dailyAdapter
 
@@ -85,32 +88,6 @@ open class HomeActivity : AppCompatActivity() {
 
         tvCancel.visibility = View.GONE
         tvAdd.visibility = View.GONE
-
-        val currentTime = LocalTime.now()
-
-        val lightBackground = ContextCompat.getColor(this@HomeActivity, R.color.light_blue)
-        val darkBackground = ContextCompat.getColor(this@HomeActivity, R.color.dark_gray)
-        val lightCardView = ContextCompat.getColor(this@HomeActivity, R.color.cv_light_color)
-        val darkCardView = ContextCompat.getColor(this@HomeActivity, R.color.light_gray)
-
-        if (!currentTime.isBefore(LocalTime.of(6, 0)) && currentTime.isBefore(LocalTime.of(18, 0))) {
-            window.decorView.setBackgroundColor(lightBackground)
-            cv1.setCardBackgroundColor(lightCardView)
-            cv2.setCardBackgroundColor(lightCardView)
-            cv3.setCardBackgroundColor(lightCardView)
-            cv4.setCardBackgroundColor(lightCardView)
-            cv5.setCardBackgroundColor(lightCardView)
-            cv6.setCardBackgroundColor(lightCardView)
-        }
-        else {
-            window.decorView.setBackgroundColor(darkBackground)
-            cv1.setCardBackgroundColor(darkCardView)
-            cv2.setCardBackgroundColor(darkCardView)
-            cv3.setCardBackgroundColor(darkCardView)
-            cv4.setCardBackgroundColor(darkCardView)
-            cv5.setCardBackgroundColor(darkCardView)
-            cv6.setCardBackgroundColor(darkCardView)
-        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -120,9 +97,11 @@ open class HomeActivity : AppCompatActivity() {
 
         hourlyList.observe(this@HomeActivity, Observer { hourlyList ->
             hourlyAdapter.submitList(hourlyList)
+            binding.pbHourly.visibility = View.GONE
         })
         dailyList.observe(this@HomeActivity, Observer { threeDayList ->
             dailyAdapter.submitList(threeDayList)
+            binding.pbDaily.visibility = View.GONE
         })
         currentWeather.observe(this@HomeActivity, Observer { weather ->
             with(binding) {

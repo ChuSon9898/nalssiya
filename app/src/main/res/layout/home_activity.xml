@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeActivity">
+    tools:context=".ui.home.HomeActivity"
+    android:background="@color/light_blue">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -49,8 +50,8 @@
                 android:id="@+id/iv_list"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
                 android:src="@drawable/ic_list"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 app:layout_constraintStart_toStartOf="parent"
@@ -132,6 +133,7 @@
                 android:layout_marginTop="30dp"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="5dp"
+                app:cardBackgroundColor="@color/cv_light_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout">
@@ -180,6 +182,18 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/divider1"
                         tools:listitem="@layout/home_hourly_item"/>
+
+                    <ProgressBar
+                        android:id="@+id/pb_hourly"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="@+id/rv_hourly"
+                        app:layout_constraintEnd_toEndOf="@+id/rv_hourly"
+                        app:layout_constraintStart_toStartOf="@+id/rv_hourly"
+                        app:layout_constraintTop_toTopOf="@+id/rv_hourly"
+                        android:visibility="invisible"
+                        android:indeterminateTint="@color/light_blue" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
@@ -191,6 +205,7 @@
                 android:layout_marginTop="30dp"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="5dp"
+                app:cardBackgroundColor="@color/cv_light_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cv1">
@@ -235,6 +250,19 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+                    <ProgressBar
+                        android:id="@+id/pb_daily"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="@+id/rv_daily"
+                        app:layout_constraintStart_toStartOf="@+id/rv_daily"
+                        app:layout_constraintTop_toTopOf="@+id/rv_daily"
+                        app:layout_constraintBottom_toBottomOf="@+id/rv_daily"
+                        tools:layout_editor_absoluteY="188dp"
+                        android:visibility="invisible"
+                        android:indeterminateTint="@color/light_blue"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
@@ -255,6 +283,7 @@
                     android:layout_height="match_parent"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="5dp"
+                    app:cardBackgroundColor="@color/cv_light_color"
                     android:layout_weight="1"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="10dp">
@@ -311,6 +340,7 @@
                     android:layout_height="match_parent"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="5dp"
+                    app:cardBackgroundColor="@color/cv_light_color"
                     android:layout_weight="1"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="20dp">
@@ -370,6 +400,7 @@
                     android:layout_height="match_parent"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="5dp"
+                    app:cardBackgroundColor="@color/cv_light_color"
                     android:layout_weight="1"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="10dp">
@@ -425,6 +456,7 @@
                     android:layout_height="match_parent"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="5dp"
+                    app:cardBackgroundColor="@color/cv_light_color"
                     android:layout_weight="1"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="20dp">
