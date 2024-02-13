@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="24dp"
-                android:text="동작구"
+                android:text="@string/bookmark_rv_item_location"
                 android:textColor="@color/white"
                 android:textSize="32sp"
                 android:textStyle="bold"
@@ -66,7 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="32dp"
-                android:text="-7°"
+                android:text="@string/bookmark_rv_item_temp"
                 android:textColor="@color/white"
                 android:textSize="30sp"
                 android:textStyle="bold"
@@ -74,19 +74,58 @@
                 app:layout_constraintTop_toTopOf="@+id/bookmark_tv_location" />
 
             <TextView
-                android:id="@+id/bookmark_tv_max_and_min"
+                android:id="@+id/bookmark_tv_min_temp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="24dp"
-                android:text="최고 -2°  최저 -8°"
+                android:text="@string/bookmark_rv_item_minTemp"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/bookmark_tv_temp" />
+
+            <TextView
+                android:id="@+id/bookmark_tv_max_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="@string/bookmark_rv_item_maxTemp"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/textView"
+                app:layout_constraintEnd_toStartOf="@+id/textView"
+                app:layout_constraintTop_toTopOf="@+id/textView" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:text="@string/bookmark_rv_item_title_minTemp"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/bookmark_tv_min_temp"
+                app:layout_constraintEnd_toEndOf="@+id/bookmark_tv_min_temp"
+                app:layout_constraintTop_toTopOf="@+id/bookmark_tv_min_temp" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:text="@string/bookmark_rv_item_title_maxTemp"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/bookmark_tv_max_temp"
+                app:layout_constraintEnd_toEndOf="@+id/bookmark_tv_max_temp"
+                app:layout_constraintTop_toTopOf="@+id/bookmark_tv_max_temp" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
