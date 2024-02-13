@@ -81,6 +81,10 @@ class BookmarkActivity : AppCompatActivity() {
         var itemTouchHelper = ItemTouchHelper(SwipeToDelete(listAdapter, this@BookmarkActivity))
         itemTouchHelper.attachToRecyclerView(bookmarkRv)
 
+        ivBack.setOnClickListener {
+            finish()
+        }
+
         bookmarkRv.adapter = listAdapter
         bookmarkRv.layoutManager = LinearLayoutManager(this@BookmarkActivity)
 

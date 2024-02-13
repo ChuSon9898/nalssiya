@@ -3,6 +3,7 @@ package com.example.weather_app.ui.bookmark
 import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -75,24 +76,9 @@ class BookmarkListAdapter :
         @SuppressLint("SetTextI18n")
         fun bind(bookmarkItem: BookmarkDataModel) {
             with(binding) {
-                val currentTime = LocalTime.now()
-
-                if (!currentTime.isBefore(LocalTime.of(6, 0)) && currentTime.isBefore(LocalTime.of(18, 0))) {
-                    cardViewLayout.setBackgroundColor(
-                        ContextCompat.getColor(
-                            root.context,
-                            R.color.light_blue
-                        )
-                    )
-                }
-                else {
-                    cardViewLayout.setBackgroundColor(
-                        ContextCompat.getColor(
-                            root.context,
-                            R.color.dark_blue
-                        )
-                    )
-                }
+                bookmarkTvTemp.visibility = View.INVISIBLE
+                bookmarkTvMaxTemp.visibility = View.INVISIBLE
+                bookmarkTvMinTemp.visibility = View.INVISIBLE
 
                 if (bookmarkItem.Dong.isEmpty()) {
                     bookmarkTvLocation.text = bookmarkItem.Gu
@@ -142,8 +128,13 @@ class BookmarkListAdapter :
                     Log.d("itemInfo", "${minTemp}, ${maxTemp}, ${temp}")
 
                     withContext(Dispatchers.Main) {
-                        bookmarkTvMaxAndMin.text = "최고 ${maxTemp}° 최저 ${minTemp}°"
+                        bookmarkTvMinTemp.text = "${minTemp}°"
+                        bookmarkTvMaxTemp.text = "${maxTemp}°"
                         bookmarkTvTemp.text = "${temp}°"
+
+                        bookmarkTvTemp.visibility = View.VISIBLE
+                        bookmarkTvMaxTemp.visibility = View.VISIBLE
+                        bookmarkTvMinTemp.visibility = View.VISIBLE
                     }
                 }
 

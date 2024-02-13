@@ -5,17 +5,16 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weather_app.R
 import com.example.weather_app.data.model.BookmarkDataModel
-import com.example.weather_app.data.room.Repository
+import com.example.weather_app.data.room.BookmarkDatabase
+import com.example.weather_app.data.repository.room.BookmarkRepositoryImpl
 import com.example.weather_app.databinding.HomeActivityBinding
 import com.example.weather_app.ui.home.DailyListAdapter
 import com.example.weather_app.ui.home.HomeViewModel
@@ -39,6 +38,8 @@ class BookmarkDetailActivity : AppCompatActivity() {
     private val dailyAdapter by lazy {
         DailyListAdapter()
     }
+
+    private val db = BookmarkDatabase.getDatabase(this)
 
     companion object {
         const val OBJECT_DATA = "item_object"
@@ -68,6 +69,9 @@ class BookmarkDetailActivity : AppCompatActivity() {
     }
 
     private fun initView() = with(binding) {
+        pbHourly.visibility = View.VISIBLE
+        pbDaily.visibility = View.VISIBLE
+
         rvHourly.adapter = hourlyAdapter
         rvDaily.adapter = dailyAdapter
 
@@ -80,7 +84,7 @@ class BookmarkDetailActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
 
-            val addBookmark = Repository(applicationContext).getDatabylocation(item!!.Gu + " " + item!!.Dong)
+            val addBookmark = BookmarkRepositoryImpl().getDataByLocation(db,item!!.Gu + " " + item!!.Dong)
 
             if(addBookmark.isNotEmpty()){
                 tvAdd.visibility = View.INVISIBLE
@@ -101,32 +105,6 @@ class BookmarkDetailActivity : AppCompatActivity() {
         }else{
             tvLocation.text = item!!.Dong
         }
-
-        val currentTime = LocalTime.now()
-
-        val lightBackground = ContextCompat.getColor(this@BookmarkDetailActivity, R.color.light_blue)
-        val darkBackground = ContextCompat.getColor(this@BookmarkDetailActivity, R.color.dark_gray)
-        val lightCardView = ContextCompat.getColor(this@BookmarkDetailActivity, R.color.cv_light_color)
-        val darkCardView = ContextCompat.getColor(this@BookmarkDetailActivity, R.color.light_gray)
-
-        if (!currentTime.isBefore(LocalTime.of(6, 0)) && currentTime.isBefore(LocalTime.of(18, 0))) {
-            window.decorView.setBackgroundColor(lightBackground)
-            cv1.setCardBackgroundColor(lightCardView)
-            cv2.setCardBackgroundColor(lightCardView)
-            cv3.setCardBackgroundColor(lightCardView)
-            cv4.setCardBackgroundColor(lightCardView)
-            cv5.setCardBackgroundColor(lightCardView)
-            cv6.setCardBackgroundColor(lightCardView)
-        }
-        else {
-            window.decorView.setBackgroundColor(darkBackground)
-            cv1.setCardBackgroundColor(darkCardView)
-            cv2.setCardBackgroundColor(darkCardView)
-            cv3.setCardBackgroundColor(darkCardView)
-            cv4.setCardBackgroundColor(darkCardView)
-            cv5.setCardBackgroundColor(darkCardView)
-            cv6.setCardBackgroundColor(darkCardView)
-        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -136,9 +114,11 @@ class BookmarkDetailActivity : AppCompatActivity() {
 
         hourlyList.observe(this@BookmarkDetailActivity, Observer { hourlyList ->
             hourlyAdapter.submitList(hourlyList)
+            binding.pbHourly.visibility = View.GONE
         })
-        dailyList.observe(this@BookmarkDetailActivity, Observer { threeDayList ->
-            dailyAdapter.submitList(threeDayList)
+        dailyList.observe(this@BookmarkDetailActivity, Observer { dailyList ->
+            dailyAdapter.submitList(dailyList)
+            binding.pbDaily.visibility = View.GONE
         })
         currentWeather.observe(this@BookmarkDetailActivity, Observer { weather ->
             with(binding) {
