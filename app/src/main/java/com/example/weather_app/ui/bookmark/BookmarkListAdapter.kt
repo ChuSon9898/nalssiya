@@ -1,16 +1,13 @@
 package com.example.weather_app.ui.bookmark
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.weather_app.R
 import com.example.weather_app.data.model.BookmarkDataModel
 import com.example.weather_app.data.retrofit.RetrofitClient
 import com.example.weather_app.data.retrofit.RetrofitInterface
@@ -90,7 +87,6 @@ class BookmarkListAdapter :
                 val client = RetrofitClient.getInstance().create(RetrofitInterface::class.java)
 
                 CoroutineScope(Dispatchers.IO).launch {
-                    Log.d("itemInfo", bookmarkItem.toString())
                     val responseMinMax = client.getHourlyWeatehr(
                         "JSON",
                         200,
@@ -124,8 +120,6 @@ class BookmarkListAdapter :
                             LocalTime.now().format(DateTimeFormatter.ofPattern("HH"))
                         }00"
                     }?.fcstValue ?: ""
-
-                    Log.d("itemInfo", "${minTemp}, ${maxTemp}, ${temp}")
 
                     withContext(Dispatchers.Main) {
                         bookmarkTvMinTemp.text = "${minTemp}°"

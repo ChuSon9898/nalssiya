@@ -8,13 +8,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.weather_app.R
 import com.example.weather_app.data.model.BookmarkDataModel
-import com.example.weather_app.data.room.BookmarkDatabase
 import com.example.weather_app.data.repository.room.BookmarkRepositoryImpl
+import com.example.weather_app.data.room.BookmarkDatabase
 import com.example.weather_app.databinding.HomeActivityBinding
 import com.example.weather_app.ui.home.DailyListAdapter
 import com.example.weather_app.ui.home.HomeViewModel
@@ -23,7 +21,6 @@ import com.example.weather_app.ui.home.HourlyListAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.LocalTime
 
 class BookmarkDetailActivity : AppCompatActivity() {
     private lateinit var binding: HomeActivityBinding

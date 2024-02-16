@@ -6,12 +6,10 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.Constraints
@@ -19,20 +17,17 @@ import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
-import com.example.weather_app.R
 import com.example.weather_app.databinding.HomeActivityBinding
-import com.example.weather_app.util.RequestPermissionsUtil
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.example.weather_app.ui.bookmark.BookmarkActivity.Companion.bookmarkIndent
 import com.example.weather_app.util.NotificationWorkManager
+import com.example.weather_app.util.RequestPermissionsUtil
 import com.example.weather_app.util.RetrofitWorkManager
 import com.example.weather_app.util.Utils
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import java.io.IOException
-import java.time.LocalTime
 import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -166,7 +161,6 @@ open class HomeActivity : AppCompatActivity() {
                     latitude = location.latitude
                     longitude = location.longitude
 
-                    Log.d("HomeActivity", "성공")
                     val address = getAddress(latitude, longitude)?.get(0)
 
                     Utils.getCsvData(this).first { it.Gu == address!!.getAddressLine(0).split(" ")[1] && it.Dong.contains(address!!.getAddressLine(0).split(" ")[2]) }.apply {
@@ -175,9 +169,6 @@ open class HomeActivity : AppCompatActivity() {
 
                     }
                     initViewModel(dfsXyConv(latitude, longitude), tempArea, landArea)
-                    Log.d("MyLocation", "${latitude}, ${longitude}. ${tempArea}, ${landArea}")
-                    Log.d("HomeActivity", address.toString())
-                    Log.d("CSV", Utils.getCsvData(this).toString())
 
                     val locationData : Data = workDataOf(
                         "nx" to dfsXyConv(latitude, longitude).x.toString(),
@@ -189,7 +180,6 @@ open class HomeActivity : AppCompatActivity() {
                 }
             }
             .addOnFailureListener { fail ->
-                Log.d("Location", "실패")
                 Toast.makeText(this, "위치를 조회할 수 없습니다", Toast.LENGTH_LONG).show()
             }
     }

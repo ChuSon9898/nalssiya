@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
-class SwipeToDelete(var adapter: BookmarkListAdapter, val context : ViewModelStoreOwner): ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+class SwipeToDelete(private val adapter: BookmarkListAdapter, private val context : ViewModelStoreOwner): ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
     private val bookmarkViewModel by lazy {
         ViewModelProvider(context).get(BookmarkViewModel::class.java)
@@ -23,7 +23,7 @@ class SwipeToDelete(var adapter: BookmarkListAdapter, val context : ViewModelSto
     //스와이프 동작
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
 
-        var pos = viewHolder.adapterPosition
+        val pos = viewHolder.adapterPosition
         val item = adapter.getItem(pos)
 
         //Room 데이터 삭제

@@ -6,7 +6,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.work.Constraints
 import androidx.work.Data
@@ -25,8 +24,6 @@ import java.util.concurrent.TimeUnit
 class NotificationWorkManager(context: Context, params: WorkerParameters) : Worker(context, params) {
     override fun doWork(): Result {
         val weatherData = inputData.getStringArray("weatherData")
-
-        Log.d("NotificationWorkManager", weatherData.contentToString())
 
         val weather = weatherData?.get(0) ?: "조회 실패"
         val minTemp = weatherData?.get(1) ?: ""

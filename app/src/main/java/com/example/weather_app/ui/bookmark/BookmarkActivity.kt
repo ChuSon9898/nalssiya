@@ -16,15 +16,13 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weather_app.data.model.BookmarkDataModel
-import com.example.weather_app.data.room.BookmarkEntity
 import com.example.weather_app.databinding.BookmarkActivityBinding
 import com.example.weather_app.ui.bookmark.BookmarkDetailActivity.Companion.detailIntent
 import com.mancj.materialsearchbar.MaterialSearchBar
 
 class BookmarkActivity : AppCompatActivity() {
 
-    lateinit var binding: BookmarkActivityBinding
-    lateinit var bookmarkEntity: BookmarkEntity
+    private lateinit var binding: BookmarkActivityBinding
 
     private val listAdapter by lazy {
         BookmarkListAdapter()
@@ -53,9 +51,6 @@ class BookmarkActivity : AppCompatActivity() {
                         bookmarkViewModel.insertData(item.Gu + " " + item.Dong, item.nx, item.ny, item.landArea, item.tempArea)
                     }
                 }
-
-            }else{
-
             }
         }
 

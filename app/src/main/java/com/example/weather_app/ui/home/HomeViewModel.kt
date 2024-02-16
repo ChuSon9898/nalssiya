@@ -1,14 +1,13 @@
 package com.example.weather_app.ui.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weather_app.data.model.DailyDataModel
 import com.example.weather_app.data.model.HourlyDataModel
-import com.example.weather_app.data.model.ThreeDailyModel
 import com.example.weather_app.data.model.HourlyWeather
+import com.example.weather_app.data.model.ThreeDailyModel
 import com.example.weather_app.data.repository.retrofit.DailyTempRepositoryImpl
 import com.example.weather_app.data.repository.retrofit.DailyWeatherRepositoryImpl
 import com.example.weather_app.data.repository.retrofit.HourlyRepositoryImpl
@@ -74,7 +73,7 @@ class HomeViewModel(
                 nx,
                 ny
             )
-            Log.d("ViewModel", "${Utils.getBaseDate(currentDateTime)}, ${Utils.getBaseTime(currentTime)}")
+
             val list = response.body()?.response!!.body.items.item
             val groupedData = mutableMapOf<Pair<String, String>, MutableList<HourlyWeather.Item>>()
 
@@ -114,14 +113,6 @@ class HomeViewModel(
             //생성된 리스트에서 현재 시간에 해당하는 데이터 찾기
             val currentWeatherData =
                 hourlyData.find { it.fcstDate == currentDateTime2 && it.fcstTime == currentDateTime3 }
-
-            for (i in hourlyData) {
-                Log.d("viewModel", "들어온 데이터 : $i")
-            }
-            for (i in todayHourlyData) {
-                Log.d("viewModel", "필터링된 데이터 : $i")
-            }
-            Log.d("viewModel", "현재 날씨 데이터 : $currentWeatherData")
 
             _currentWeather.value = currentWeatherData
             _hourlyList.value = todayHourlyData
@@ -231,8 +222,6 @@ class HomeViewModel(
                     )
                 )
             }
-            Log.d("dailyTemp", tempList.toString())
-            Log.d("dailyWeather", weatherList.toString())
             
             //오늘 것은 Activity에 띄우기 위해 따로 분리
             _currentWeather2.value = dailyWeatherList[0]

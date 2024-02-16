@@ -78,16 +78,14 @@ class BookmarkViewModel(private val bookmarkRepository : BookmarkRepositoryImpl,
         } else {
             val filteredList = mutableListOf<BookmarkDataModel>()
 
-            if (totalSearchList != null) {
-                for (item in totalSearchList) {
-                    val location = item.Gu + " " + item.Dong
-                    if (item.Gu.contains(s, ignoreCase = true) || item.Dong.contains(
-                            s,
-                            true
-                        ) || location.contains(s, true)
-                    ) {
-                        filteredList.add(item)
-                    }
+            for (item in totalSearchList) {
+                val location = item.Gu + " " + item.Dong
+                if (item.Gu.contains(s, ignoreCase = true) || item.Dong.contains(
+                        s,
+                        true
+                    ) || location.contains(s, true)
+                ) {
+                    filteredList.add(item)
                 }
             }
 

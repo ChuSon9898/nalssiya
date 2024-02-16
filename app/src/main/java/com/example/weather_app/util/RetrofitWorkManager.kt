@@ -1,13 +1,11 @@
 package com.example.weather_app.util
 
 import android.content.Context
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import com.example.weather_app.data.retrofit.RetrofitClient
 import com.example.weather_app.data.retrofit.RetrofitInterface
-import kotlinx.coroutines.delay
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -60,9 +58,6 @@ class RetrofitWorkManager(
         val outputData = Data.Builder()
             .putStringArray("weatherData", arrayOf(weather, minTemp, maxTemp, nx, ny))
             .build()
-
-        Log.d("RetrofitWorkManager", "${nx}, ${ny}")
-        Log.d("RetrofitWorkManager", "${weather}, ${minTemp}, ${maxTemp}")
 
         return Result.success(outputData)
     }

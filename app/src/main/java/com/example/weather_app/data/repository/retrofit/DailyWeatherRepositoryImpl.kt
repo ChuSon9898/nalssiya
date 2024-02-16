@@ -1,6 +1,5 @@
 package com.example.weather_app.data.repository.retrofit
 
-import com.example.weather_app.data.retrofit.RetrofitClient
 import com.example.weather_app.data.retrofit.RetrofitInterface
 import com.example.weather_app.domain.repository.retrofit.DailyWeatherRepository
 
