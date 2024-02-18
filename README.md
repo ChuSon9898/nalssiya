@@ -1,4 +1,4 @@
-![header](https://capsule-render.vercel.app/api?type=waving&color=0:6e45e2,100:88d3ce&height=290&section=header&text=Weather-App%20&fontColor=ffffff&fontSize=50&animation=blink&fontAlignY=40)
+![header](https://capsule-render.vercel.app/api?type=waving&color=0:6e45e2,100:88d3ce&height=290&section=header&text=Nalssiya%20&fontColor=ffffff&fontSize=50&animation=blink&fontAlignY=40)
 
 
 # 🎧 팀 소개
