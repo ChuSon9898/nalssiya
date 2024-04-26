@@ -12,5 +12,8 @@ data class BookmarkDataModel(
     val nx : String,
     val ny : String,
     val landArea: String,
-    val tempArea: String
+    val tempArea: String,
+    var temp : String = "",
+    var minTemp : String = "",
+    var maxTemp : String = ""
 ) : Parcelable

@@ -19,7 +19,9 @@ import com.example.weather_app.data.model.BookmarkDataModel
 import com.example.weather_app.databinding.BookmarkActivityBinding
 import com.example.weather_app.ui.bookmark.BookmarkDetailActivity.Companion.detailIntent
 import com.mancj.materialsearchbar.MaterialSearchBar
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class BookmarkActivity : AppCompatActivity() {
 
     private lateinit var binding: BookmarkActivityBinding
@@ -32,9 +34,7 @@ class BookmarkActivity : AppCompatActivity() {
         BookmarkSearchListAdapter()
     }
 
-    private val bookmarkViewModel: BookmarkViewModel by viewModels {
-        BookmarkViewModelFactory(application)
-    }
+    private val bookmarkViewModel: BookmarkViewModel by viewModels()
 
     private val addBoardLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

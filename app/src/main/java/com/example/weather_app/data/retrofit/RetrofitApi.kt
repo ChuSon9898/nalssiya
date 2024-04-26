@@ -8,7 +8,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface RetrofitInterface {
+interface RetrofitApi {
     @GET("VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${API_KEY}")
     suspend fun getHourlyWeatehr(
         @Query("dataType") dataType : String,

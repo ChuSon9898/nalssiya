@@ -27,11 +27,13 @@ import com.example.weather_app.util.RetrofitWorkManager
 import com.example.weather_app.util.Utils
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
+@AndroidEntryPoint
 open class HomeActivity : AppCompatActivity() {
     //앱 실행 시, 위치 권한 묻기
     override fun onStart() {
@@ -41,9 +43,7 @@ open class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: HomeActivityBinding
 
-    private val viewModel: HomeViewModel by viewModels {
-        HomeViewModelFactory()
-    }
+    private val viewModel: HomeViewModel by viewModels()
 
     private val hourlyAdapter by lazy {
         HourlyListAdapter()

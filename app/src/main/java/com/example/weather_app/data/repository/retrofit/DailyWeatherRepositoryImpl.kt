@@ -1,14 +1,16 @@
 package com.example.weather_app.data.repository.retrofit
 
-import com.example.weather_app.data.retrofit.RetrofitInterface
+import com.example.weather_app.data.retrofit.RetrofitApi
 import com.example.weather_app.domain.repository.retrofit.DailyWeatherRepository
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class DailyWeatherRepositoryImpl : DailyWeatherRepository {
+@Singleton
+class DailyWeatherRepositoryImpl @Inject constructor(private val api: RetrofitApi): DailyWeatherRepository {
     override suspend fun getDailyWeatherData(
-        client : RetrofitInterface,
         numOfRows : Int,
         pageNo : Int,
         regId : String,
         tmFc : String
-    ) = client.getDailyWeather("JSON", numOfRows, pageNo, regId, tmFc)
+    ) = api.getDailyWeather("JSON", numOfRows, pageNo, regId, tmFc)
 }
