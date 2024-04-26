@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("kotlin-parcelize")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -41,6 +42,9 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+    }
+    kapt {
+        correctErrorTypes = true
     }
 }
 
@@ -93,4 +97,8 @@ dependencies {
 
     //WorkManager
     implementation("androidx.work:work-runtime:2.9.0")
+
+    //Hilt
+    implementation("com.google.dagger:hilt-android:2.50")
+    kapt("com.google.dagger:hilt-compiler:2.50")
 }
