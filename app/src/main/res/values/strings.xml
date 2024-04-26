@@ -1,3 +1,47 @@
 <resources>
     <string name="app_name">weather-app</string>
+
+    <!-- home_activity.xml -->
+    <string name="home_activity_add">추가</string>
+    <string name="home_activity_cancel">취소</string>
+    <string name="home_activity_location">나의 위치</string>
+    <string name="home_activity_temp">0°</string>
+    <string name="home_activity_weather">맑음</string>
+    <string name="home_activity_maxTemp">최고 : 0°</string>
+    <string name="home_activity_minTemp">최저 : 0°</string>
+    <string name="home_activity_title_hourly">시간별 일기예보</string>
+    <string name="home_activity_title_daily">일간별 일기예보</string>
+    <string name="home_activity_title_wind">풍속 / 풍향</string>
+    <string name="home_activity_wind">0</string>
+    <string name="home_activity_wind_state">북-북서</string>
+    <string name="home_activity_title_snow">적설량</string>
+    <string name="home_activity_snow">0cm</string>
+    <string name="home_activity_title_rain">강수량</string>
+    <string name="home_activity_rain">0mm</string>
+    <string name="home_activity_rain_24">지난 1시간</string>
+    <string name="home_activity_title_humidity">습도</string>
+    <string name="home_activity_humidity">0%</string>
+
+    <!-- hourly_item.xml -->
+    <string name="hourly_item_time">오전 7시</string>
+    <string name="hourly_item_temp">-5°</string>
+
+    <!-- daily_item.xml -->
+    <string name="daily_item_day">오늘</string>
+    <string name="daily_item_date">01.10</string>
+    <string name="daily_item_title_maxTemp">최고</string>
+    <string name="daily_item_maxTemp">4°</string>
+    <string name="daily_item_title_minTemp">최저</string>
+    <string name="daily_item_minTemp">-5°</string>
+
+    <!-- bookmark_activity.xml -->
+    <string name="search_message">도시 또는 공항 검색</string>
+
+    <!-- bookmark_rv_item.xml -->
+    <string name="bookmark_rv_item_location">동작구</string>
+    <string name="bookmark_rv_item_temp">0°</string>
+    <string name="bookmark_rv_item_title_maxTemp">최고</string>
+    <string name="bookmark_rv_item_maxTemp">4°</string>
+    <string name="bookmark_rv_item_title_minTemp">최저</string>
+    <string name="bookmark_rv_item_minTemp">-5°</string>
 </resources>

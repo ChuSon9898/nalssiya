@@ -222,8 +222,12 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+
 ### AndroidStudio Patch ###
 
 !/gradle/wrapper/gradle-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/kotlin,android,androidstudio,windows
+
+# Ignore Constants.kt file
+app/src/main/java/com/example/weather_app/data/retrofit/Constants.kt
