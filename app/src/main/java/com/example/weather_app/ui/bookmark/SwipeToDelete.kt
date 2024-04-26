@@ -1,6 +1,8 @@
 package com.example.weather_app.ui.bookmark
 
 import android.graphics.Canvas
+import android.opengl.Visibility
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -28,10 +30,6 @@ class SwipeToDelete(private val adapter: BookmarkListAdapter, private val contex
 
         //Room 데이터 삭제
         bookmarkViewModel.deleteData(item.id, item.Dong, item.nx, item.ny, item.landArea, item.tempArea)
-
-        //스와이프 layout 원래대로 돌려놓기
-        val view = (viewHolder as BookmarkListAdapter.ViewHolder).swipeLayout
-        view.animate().translationX(0f).setDuration(300).start()
     }
 
     override fun onChildDraw(
