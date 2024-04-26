@@ -4,12 +4,16 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
-import com.example.weather_app.data.retrofit.RetrofitClient
-import com.example.weather_app.data.retrofit.RetrofitInterface
+import com.example.weather_app.di.RetrofitModule
+import com.example.weather_app.data.retrofit.RetrofitApi
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class RetrofitWorkManager(
+@Singleton
+class RetrofitWorkManager @Inject constructor(
+    private val api: RetrofitApi,
     context: Context,
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
@@ -17,11 +21,9 @@ class RetrofitWorkManager(
         val nx = inputData.getString("nx") ?: "55"
         val ny = inputData.getString("ny") ?: "127"
 
-        val client = RetrofitClient.getInstance().create(RetrofitInterface::class.java)
-
         val baseDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
 
-        val response = client.getHourlyWeatehr("JSON", 300, 1, baseDate.toInt(), "0200", nx, ny)
+        val response = api.getHourlyWeatehr("JSON", 300, 1, baseDate.toInt(), "0200", nx, ny)
 
         val list = response.body()?.response!!.body.items.item
 

@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_app.data.model.BookmarkDataModel
-import com.example.weather_app.data.retrofit.RetrofitClient
-import com.example.weather_app.data.retrofit.RetrofitInterface
+import com.example.weather_app.di.RetrofitModule
+import com.example.weather_app.data.retrofit.RetrofitApi
 import com.example.weather_app.databinding.BookmarkRvItemBinding
 import com.example.weather_app.util.Utils
 import kotlinx.coroutines.CoroutineScope
@@ -83,54 +83,13 @@ class BookmarkListAdapter :
                     bookmarkTvLocation.text = bookmarkItem.Dong
                 }
 
-                //API 데이터
-                val client = RetrofitClient.getInstance().create(RetrofitInterface::class.java)
+                bookmarkTvTemp.text = "${bookmarkItem.temp}°"
+                bookmarkTvMinTemp.text = "${bookmarkItem.minTemp}°"
+                bookmarkTvMaxTemp.text = "${bookmarkItem.maxTemp}°"
 
-                CoroutineScope(Dispatchers.IO).launch {
-                    val responseMinMax = client.getHourlyWeatehr(
-                        "JSON",
-                        200,
-                        1,
-                        LocalDateTime.now().minusDays(1)
-                            .format(DateTimeFormatter.ofPattern("yyyyMMdd")).toInt(),
-                        "2300",
-                        bookmarkItem.nx,
-                        bookmarkItem.ny
-                    )
-                    val minMaxList = responseMinMax.body()?.response!!.body.items.item
-
-                    //최저, 최고 온도
-                    val minTemp = minMaxList.firstOrNull { it.category == "TMN" }?.fcstValue ?: ""
-                    val maxTemp = minMaxList.firstOrNull { it.category == "TMX" }?.fcstValue ?: ""
-
-                    val responseTemp = client.getHourlyWeatehr(
-                        "JSON",
-                        100,
-                        1,
-                        Utils.getBaseDate(LocalDateTime.now()),
-                        Utils.getBaseTime(LocalTime.now()),
-                        bookmarkItem.nx,
-                        bookmarkItem.ny
-                    )
-                    val tempList = responseTemp.body()?.response!!.body.items.item
-
-                    //현재 온도
-                    val temp = tempList.firstOrNull {
-                        it.category == "TMP" && it.fcstTime == "${
-                            LocalTime.now().format(DateTimeFormatter.ofPattern("HH"))
-                        }00"
-                    }?.fcstValue ?: ""
-
-                    withContext(Dispatchers.Main) {
-                        bookmarkTvMinTemp.text = "${minTemp}°"
-                        bookmarkTvMaxTemp.text = "${maxTemp}°"
-                        bookmarkTvTemp.text = "${temp}°"
-
-                        bookmarkTvTemp.visibility = View.VISIBLE
-                        bookmarkTvMaxTemp.visibility = View.VISIBLE
-                        bookmarkTvMinTemp.visibility = View.VISIBLE
-                    }
-                }
+                bookmarkTvTemp.visibility = View.VISIBLE
+                bookmarkTvMaxTemp.visibility = View.VISIBLE
+                bookmarkTvMinTemp.visibility = View.VISIBLE
 
                 itemView.setOnClickListener {
                     onItemClickListener?.onItemClick(bookmarkItem, adapterPosition)

@@ -5,23 +5,28 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.weather_app.data.model.BookmarkDataModel
+import com.example.weather_app.data.repository.retrofit.HourlyRepositoryImpl
 import com.example.weather_app.data.room.BookmarkDatabase
 import com.example.weather_app.data.repository.room.BookmarkRepositoryImpl
+import com.example.weather_app.data.room.BookmarkEntity
 import com.example.weather_app.util.Utils
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import javax.inject.Inject
 
-
-class BookmarkViewModel(private val bookmarkRepository : BookmarkRepositoryImpl, application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class BookmarkViewModel @Inject constructor(private val bookmarkRepository : BookmarkRepositoryImpl, private val hourlyRepository: HourlyRepositoryImpl, private val bookmarkDatabase: BookmarkDatabase, application: Application) : AndroidViewModel(application) {
 
     @SuppressLint("StaticFieldLeak")
     private val context = getApplication<Application>().applicationContext
-
-    private val db = BookmarkDatabase.getDatabase(context)
 
     private val _bookmarkList = MutableLiveData<MutableList<BookmarkDataModel>>()
     val bookmarkList: LiveData<MutableList<BookmarkDataModel>> get() = _bookmarkList
@@ -39,12 +44,11 @@ class BookmarkViewModel(private val bookmarkRepository : BookmarkRepositoryImpl,
     //Room 데이터 전체 가져오기
     fun getAllData() = viewModelScope.launch(Dispatchers.IO) {
 
-        val result = bookmarkRepository.getListAll(db)
+        val result = bookmarkRepository.getListAll()
 
         val bookmarkList: MutableList<BookmarkDataModel> = mutableListOf()
 
         for (r in 0..result.size - 1) {
-
             bookmarkList.add(
                 BookmarkDataModel(
                     result[r].id,
@@ -53,13 +57,59 @@ class BookmarkViewModel(private val bookmarkRepository : BookmarkRepositoryImpl,
                     result[r].nx,
                     result[r].ny,
                     result[r].landArea,
-                    result[r].tempArea
+                    result[r].tempArea,
                 )
             )
-
         }
 
-        _bookmarkList.postValue(bookmarkList)
+        val deferredList = bookmarkList.map { item ->
+            async(Dispatchers.IO) {
+                val responseMinMax = hourlyRepository.getHourlyData(
+                    200,
+                    1,
+                    LocalDateTime.now().minusDays(1)
+                        .format(DateTimeFormatter.ofPattern("yyyyMMdd")).toInt(),
+                    "2300",
+                    item.nx,
+                    item.ny
+                )
+                val minMaxList = responseMinMax.body()?.response!!.body.items.item
+
+                //최저, 최고 온도
+                val minTemp = minMaxList.firstOrNull { it.category == "TMN" }?.fcstValue ?: ""
+                val maxTemp = minMaxList.firstOrNull { it.category == "TMX" }?.fcstValue ?: ""
+
+                val responseTemp = hourlyRepository.getHourlyData(
+                    100,
+                    1,
+                    Utils.getBaseDate(LocalDateTime.now()),
+                    Utils.getBaseTime(LocalTime.now()),
+                    item.nx,
+                    item.ny
+                )
+                val tempList = responseTemp.body()?.response!!.body.items.item
+
+                //현재 온도
+                val temp = tempList.firstOrNull {
+                    it.category == "TMP" && it.fcstTime == "${
+                        LocalTime.now().format(DateTimeFormatter.ofPattern("HH"))
+                    }00"
+                }?.fcstValue ?: ""
+
+                item.apply {
+                    this.temp = temp
+                    this.minTemp = minTemp
+                    this.maxTemp = maxTemp
+                }
+            }
+        }
+        val newBookmarkList = deferredList.awaitAll().toMutableList()
+
+        _bookmarkList.postValue(newBookmarkList)
+    }
+
+    fun getDataByLocation (item : BookmarkDataModel) : List<BookmarkEntity> {
+        return bookmarkRepository.getDataByLocation(item.Gu + " " + item.Dong)
     }
 
     //weatherdata 파일에서 데이터 가져오기
@@ -98,7 +148,7 @@ class BookmarkViewModel(private val bookmarkRepository : BookmarkRepositoryImpl,
     //Room 데이터 넣는 함수
     fun insertData(location: String, nx: String, ny: String, landArea: String, tempArea: String) =
         viewModelScope.launch(Dispatchers.IO) {
-            bookmarkRepository.insertData(db, location, nx, ny, landArea, tempArea)
+            bookmarkRepository.insertData(location, nx, ny, landArea, tempArea)
             getAllData()
         }
 
@@ -111,7 +161,7 @@ class BookmarkViewModel(private val bookmarkRepository : BookmarkRepositoryImpl,
         landArea: String,
         tempArea: String
     ) = viewModelScope.launch(Dispatchers.IO) {
-        bookmarkRepository.deleteData(db, id, location, nx, ny, landArea, tempArea)
+        bookmarkRepository.deleteData(id, location, nx, ny, landArea, tempArea)
         getAllData()
     }
 }
