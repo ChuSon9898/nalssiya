@@ -16,6 +16,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -28,8 +31,8 @@ class BookmarkViewModel @Inject constructor(private val bookmarkRepository : Boo
     @SuppressLint("StaticFieldLeak")
     private val context = getApplication<Application>().applicationContext
 
-    private val _bookmarkList = MutableLiveData<MutableList<BookmarkDataModel>>()
-    val bookmarkList: LiveData<MutableList<BookmarkDataModel>> get() = _bookmarkList
+    private val _bookmarkList = MutableStateFlow<List<BookmarkDataModel>>(emptyList())
+    val bookmarkList: StateFlow<List<BookmarkDataModel>> get() = _bookmarkList
 
     private val _searchList = MutableLiveData<MutableList<BookmarkDataModel>>()
     val searchList: LiveData<MutableList<BookmarkDataModel>> get() = _searchList
@@ -43,69 +46,68 @@ class BookmarkViewModel @Inject constructor(private val bookmarkRepository : Boo
 
     //Room 데이터 전체 가져오기
     fun getAllData() = viewModelScope.launch(Dispatchers.IO) {
+        bookmarkRepository.getListAll().collectLatest { result ->
+            val bookmarkList: MutableList<BookmarkDataModel> = mutableListOf()
 
-        val result = bookmarkRepository.getListAll()
-
-        val bookmarkList: MutableList<BookmarkDataModel> = mutableListOf()
-
-        for (r in 0..result.size - 1) {
-            bookmarkList.add(
-                BookmarkDataModel(
-                    result[r].id,
-                    result[r].location.slice(0..result[r].location.indexOf(" ") - 1),
-                    result[r].location.slice(result[r].location.indexOf(" ") + 1..result[r].location.length - 1),
-                    result[r].nx,
-                    result[r].ny,
-                    result[r].landArea,
-                    result[r].tempArea,
+            for (r in 0..result.size - 1) {
+                bookmarkList.add(
+                    BookmarkDataModel(
+                        result[r].id,
+                        result[r].location.slice(0..result[r].location.indexOf(" ") - 1),
+                        result[r].location.slice(result[r].location.indexOf(" ") + 1..result[r].location.length - 1),
+                        result[r].nx,
+                        result[r].ny,
+                        result[r].landArea,
+                        result[r].tempArea,
+                    )
                 )
-            )
-        }
+            }
 
-        val deferredList = bookmarkList.map { item ->
-            async(Dispatchers.IO) {
-                val responseMinMax = hourlyRepository.getHourlyData(
-                    200,
-                    1,
-                    LocalDateTime.now().minusDays(1)
-                        .format(DateTimeFormatter.ofPattern("yyyyMMdd")).toInt(),
-                    "2300",
-                    item.nx,
-                    item.ny
-                )
-                val minMaxList = responseMinMax.body()?.response!!.body.items.item
+            val deferredList = bookmarkList.map { item ->
+                async(Dispatchers.IO) {
+                    val responseMinMax = hourlyRepository.getHourlyData(
+                        200,
+                        1,
+                        LocalDateTime.now().minusDays(1)
+                            .format(DateTimeFormatter.ofPattern("yyyyMMdd")).toInt(),
+                        "2300",
+                        item.nx,
+                        item.ny
+                    )
+                    val minMaxList = responseMinMax.body()?.response!!.body.items.item
 
-                //최저, 최고 온도
-                val minTemp = minMaxList.firstOrNull { it.category == "TMN" }?.fcstValue ?: ""
-                val maxTemp = minMaxList.firstOrNull { it.category == "TMX" }?.fcstValue ?: ""
+                    //최저, 최고 온도
+                    val minTemp = minMaxList.firstOrNull { it.category == "TMN" }?.fcstValue ?: ""
+                    val maxTemp = minMaxList.firstOrNull { it.category == "TMX" }?.fcstValue ?: ""
 
-                val responseTemp = hourlyRepository.getHourlyData(
-                    100,
-                    1,
-                    Utils.getBaseDate(LocalDateTime.now()),
-                    Utils.getBaseTime(LocalTime.now()),
-                    item.nx,
-                    item.ny
-                )
-                val tempList = responseTemp.body()?.response!!.body.items.item
+                    val responseTemp = hourlyRepository.getHourlyData(
+                        100,
+                        1,
+                        Utils.getBaseDate(LocalDateTime.now()),
+                        Utils.getBaseTime(LocalTime.now()),
+                        item.nx,
+                        item.ny
+                    )
+                    val tempList = responseTemp.body()?.response!!.body.items.item
 
-                //현재 온도
-                val temp = tempList.firstOrNull {
-                    it.category == "TMP" && it.fcstTime == "${
-                        LocalTime.now().format(DateTimeFormatter.ofPattern("HH"))
-                    }00"
-                }?.fcstValue ?: ""
+                    //현재 온도
+                    val temp = tempList.firstOrNull {
+                        it.category == "TMP" && it.fcstTime == "${
+                            LocalTime.now().format(DateTimeFormatter.ofPattern("HH"))
+                        }00"
+                    }?.fcstValue ?: ""
 
-                item.apply {
-                    this.temp = temp
-                    this.minTemp = minTemp
-                    this.maxTemp = maxTemp
+                    item.apply {
+                        this.temp = temp
+                        this.minTemp = minTemp
+                        this.maxTemp = maxTemp
+                    }
                 }
             }
-        }
-        val newBookmarkList = deferredList.awaitAll().toMutableList()
+            val newBookmarkList = deferredList.awaitAll()
 
-        _bookmarkList.postValue(newBookmarkList)
+            _bookmarkList.value = newBookmarkList
+        }
     }
 
     fun getDataByLocation (item : BookmarkDataModel) : List<BookmarkEntity> {
@@ -149,7 +151,6 @@ class BookmarkViewModel @Inject constructor(private val bookmarkRepository : Boo
     fun insertData(location: String, nx: String, ny: String, landArea: String, tempArea: String) =
         viewModelScope.launch(Dispatchers.IO) {
             bookmarkRepository.insertData(location, nx, ny, landArea, tempArea)
-            getAllData()
         }
 
     //Room 데이터 삭제하는 함수
@@ -162,6 +163,5 @@ class BookmarkViewModel @Inject constructor(private val bookmarkRepository : Boo
         tempArea: String
     ) = viewModelScope.launch(Dispatchers.IO) {
         bookmarkRepository.deleteData(id, location, nx, ny, landArea, tempArea)
-        getAllData()
     }
 }
