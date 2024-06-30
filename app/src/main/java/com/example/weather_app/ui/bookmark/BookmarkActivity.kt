@@ -12,6 +12,9 @@ import android.widget.LinearLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +23,8 @@ import com.example.weather_app.databinding.BookmarkActivityBinding
 import com.example.weather_app.ui.bookmark.BookmarkDetailActivity.Companion.detailIntent
 import com.mancj.materialsearchbar.MaterialSearchBar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class BookmarkActivity : AppCompatActivity() {
@@ -68,7 +73,7 @@ class BookmarkActivity : AppCompatActivity() {
 
 
         initView()
-        initModel()
+        initViewModel()
     }
 
     private fun initView() = with(binding) {
@@ -143,11 +148,16 @@ class BookmarkActivity : AppCompatActivity() {
 
     }
 
-    private fun initModel() = with(bookmarkViewModel) {
-        bookmarkViewModel.bookmarkList.observe(this@BookmarkActivity){ bookmarkList ->
-            listAdapter.submitList(bookmarkList)
+    private fun initViewModel() = with(bookmarkViewModel) {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    bookmarkList.collectLatest {
+                        listAdapter.submitList(it)
+                    }
+                }
+            }
         }
-
         bookmarkViewModel.searchList.observe(this@BookmarkActivity){ searchList ->
             searchListAdapter.submitList(searchList)
         }
