@@ -10,7 +10,5 @@ interface BookmarkRepository {
 
     fun getDataByLocation(sLocation: String) : List<BookmarkEntity>
 
-    fun deleteAllData()
-
     fun deleteData(id : Int, location: String, nx: String, ny: String, landArea: String, tempArea: String)
 }

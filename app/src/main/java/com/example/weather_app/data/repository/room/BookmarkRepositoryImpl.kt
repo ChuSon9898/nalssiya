@@ -14,9 +14,7 @@ class BookmarkRepositoryImpl @Inject constructor(private val bookmarkDAO: Bookma
         BookmarkEntity(0, location, nx, ny, landArea, tempArea)
     )
 
-    override fun getDataByLocation(sLocation: String) = bookmarkDAO.getDatabylocation(sLocation)
-
-    override fun deleteAllData() = bookmarkDAO.deleteAllData()
+    override fun getDataByLocation(sLocation: String) = bookmarkDAO.getDatabyLocation(sLocation)
 
     override fun deleteData(id : Int, location: String, nx: String, ny: String, landArea: String, tempArea: String) = bookmarkDAO.deleteData(
         BookmarkEntity(id, location, nx, ny, landArea, tempArea)
