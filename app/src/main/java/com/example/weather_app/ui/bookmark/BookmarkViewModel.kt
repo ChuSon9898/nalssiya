@@ -8,9 +8,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.weather_app.data.model.BookmarkDataModel
 import com.example.weather_app.data.repository.retrofit.HourlyRepositoryImpl
-import com.example.weather_app.data.room.BookmarkDatabase
 import com.example.weather_app.data.repository.room.BookmarkRepositoryImpl
 import com.example.weather_app.data.room.BookmarkEntity
+import com.example.weather_app.domain.usecase.bookmark.DeleteBookmarkDataUseCase
+import com.example.weather_app.domain.usecase.bookmark.GetBookmarkDataUseCase
+import com.example.weather_app.domain.usecase.bookmark.GetDataByLocationUseCase
+import com.example.weather_app.domain.usecase.bookmark.InsertBookmarkDataUseCase
+import com.example.weather_app.domain.usecase.weather.HourlyDataUseCase
 import com.example.weather_app.util.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +30,14 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
-class BookmarkViewModel @Inject constructor(private val bookmarkRepository : BookmarkRepositoryImpl, private val hourlyRepository: HourlyRepositoryImpl, private val bookmarkDatabase: BookmarkDatabase, application: Application) : AndroidViewModel(application) {
+class BookmarkViewModel @Inject constructor(
+    private val getBookmarkDataUseCase: GetBookmarkDataUseCase,
+    private val insertBookmarkDataUseCase: InsertBookmarkDataUseCase,
+    private val deleteBookmarkDataUseCase: DeleteBookmarkDataUseCase,
+    private val getDataByLocationUseCase: GetDataByLocationUseCase,
+    private val hourlyDataUseCase: HourlyDataUseCase,
+    application: Application
+) : AndroidViewModel(application) {
 
     @SuppressLint("StaticFieldLeak")
     private val context = getApplication<Application>().applicationContext
@@ -46,7 +57,8 @@ class BookmarkViewModel @Inject constructor(private val bookmarkRepository : Boo
 
     //Room 데이터 전체 가져오기
     fun getAllData() = viewModelScope.launch(Dispatchers.IO) {
-        bookmarkRepository.getListAll().collectLatest { result ->
+
+        getBookmarkDataUseCase.invoke().collectLatest { result ->
             val bookmarkList: MutableList<BookmarkDataModel> = mutableListOf()
 
             for (r in 0..result.size - 1) {
@@ -65,7 +77,7 @@ class BookmarkViewModel @Inject constructor(private val bookmarkRepository : Boo
 
             val deferredList = bookmarkList.map { item ->
                 async(Dispatchers.IO) {
-                    val responseMinMax = hourlyRepository.getHourlyData(
+                    val responseMinMax = hourlyDataUseCase(
                         200,
                         1,
                         LocalDateTime.now().minusDays(1)
@@ -80,7 +92,7 @@ class BookmarkViewModel @Inject constructor(private val bookmarkRepository : Boo
                     val minTemp = minMaxList.firstOrNull { it.category == "TMN" }?.fcstValue ?: ""
                     val maxTemp = minMaxList.firstOrNull { it.category == "TMX" }?.fcstValue ?: ""
 
-                    val responseTemp = hourlyRepository.getHourlyData(
+                    val responseTemp = hourlyDataUseCase(
                         100,
                         1,
                         Utils.getBaseDate(LocalDateTime.now()),
@@ -110,8 +122,8 @@ class BookmarkViewModel @Inject constructor(private val bookmarkRepository : Boo
         }
     }
 
-    fun getDataByLocation (item : BookmarkDataModel) : List<BookmarkEntity> {
-        return bookmarkRepository.getDataByLocation(item.Gu + " " + item.Dong)
+    fun getDataByLocation(item: BookmarkDataModel): List<BookmarkEntity> {
+        return getDataByLocationUseCase(item.Gu + " " + item.Dong)
     }
 
     //weatherdata 파일에서 데이터 가져오기
@@ -150,7 +162,7 @@ class BookmarkViewModel @Inject constructor(private val bookmarkRepository : Boo
     //Room 데이터 넣는 함수
     fun insertData(location: String, nx: String, ny: String, landArea: String, tempArea: String) =
         viewModelScope.launch(Dispatchers.IO) {
-            bookmarkRepository.insertData(location, nx, ny, landArea, tempArea)
+            insertBookmarkDataUseCase(location, nx, ny, landArea, tempArea)
         }
 
     //Room 데이터 삭제하는 함수
@@ -162,6 +174,6 @@ class BookmarkViewModel @Inject constructor(private val bookmarkRepository : Boo
         landArea: String,
         tempArea: String
     ) = viewModelScope.launch(Dispatchers.IO) {
-        bookmarkRepository.deleteData(id, location, nx, ny, landArea, tempArea)
+        deleteBookmarkDataUseCase(id, location, nx, ny, landArea, tempArea)
     }
 }

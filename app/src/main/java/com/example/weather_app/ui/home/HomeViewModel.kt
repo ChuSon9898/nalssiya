@@ -13,6 +13,9 @@ import com.example.weather_app.data.repository.retrofit.DailyWeatherRepositoryIm
 import com.example.weather_app.data.repository.retrofit.HourlyRepositoryImpl
 import com.example.weather_app.di.RetrofitModule
 import com.example.weather_app.data.retrofit.RetrofitApi
+import com.example.weather_app.domain.usecase.weather.DailyTempDataUseCase
+import com.example.weather_app.domain.usecase.weather.DailyWeatherDataUseCase
+import com.example.weather_app.domain.usecase.weather.HourlyDataUseCase
 import com.example.weather_app.util.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -25,9 +28,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val hourlyRepository: HourlyRepositoryImpl,
-    private val dailyTempRepository: DailyTempRepositoryImpl,
-    private val dailyWeatherRepository: DailyWeatherRepositoryImpl
+    private val hourlyDataUseCase: HourlyDataUseCase,
+    private val dailyTempDataUseCase: DailyTempDataUseCase,
+    private val dailyWeatherDataUseCase: DailyWeatherDataUseCase
 ) : ViewModel() {
     private val _hourlyList: MutableLiveData<List<HourlyDataModel>> = MutableLiveData()
     val hourlyList: LiveData<List<HourlyDataModel>> get() = _hourlyList
@@ -65,7 +68,7 @@ class HomeViewModel @Inject constructor(
         ny: String
     ) {
         viewModelScope.launch {
-            val response = hourlyRepository.getHourlyData(
+            val response = hourlyDataUseCase(
                 500,
                 1,
                 Utils.getBaseDate(currentDateTime),
@@ -123,7 +126,7 @@ class HomeViewModel @Inject constructor(
     fun getDailyWeather(nx: String, ny: String, tempArea: String, landArea: String) {
         viewModelScope.launch {
             val dailyWeatherList = mutableListOf<DailyDataModel>()
-            val response = hourlyRepository.getHourlyData(
+            val response = hourlyDataUseCase(
                 900,
                 1,
                 currentDateTime.minusDays(1).format(formatter2).toInt(),
@@ -174,11 +177,11 @@ class HomeViewModel @Inject constructor(
 
             }
             
-            //3일~10일 날씨 데이터를 불러오는 코드 (임시 지역 코드, 수정 필요)
+            //3일~10일 날씨 데이터를 불러오는 코드
             val tempResponse =
-                dailyTempRepository.getDailyTempData(10, 1, tempArea, getTmFc(currentTime, currentDateTime))
+                dailyTempDataUseCase(10, 1, tempArea, getTmFc(currentTime, currentDateTime))
             val weatherResponse =
-                dailyWeatherRepository.getDailyWeatherData(10, 1, landArea, getTmFc(currentTime, currentDateTime))
+                dailyWeatherDataUseCase(10, 1, landArea, getTmFc(currentTime, currentDateTime))
 
             val tempList = tempResponse.body()?.response!!.body.items.item
             val weatherList = weatherResponse.body()?.response!!.body.items.item
