@@ -11,20 +11,26 @@ import com.example.weather_app.data.model.ThreeDailyModel
 import com.example.weather_app.data.repository.retrofit.DailyTempRepositoryImpl
 import com.example.weather_app.data.repository.retrofit.DailyWeatherRepositoryImpl
 import com.example.weather_app.data.repository.retrofit.HourlyRepositoryImpl
-import com.example.weather_app.data.retrofit.RetrofitClient
-import com.example.weather_app.data.retrofit.RetrofitInterface
+import com.example.weather_app.di.RetrofitModule
+import com.example.weather_app.data.retrofit.RetrofitApi
+import com.example.weather_app.domain.usecase.weather.DailyTempDataUseCase
+import com.example.weather_app.domain.usecase.weather.DailyWeatherDataUseCase
+import com.example.weather_app.domain.usecase.weather.HourlyDataUseCase
 import com.example.weather_app.util.Utils
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
+import javax.inject.Inject
 
-class HomeViewModel(
-    private val hourlyRepository: HourlyRepositoryImpl,
-    private val dailyTempRepository: DailyTempRepositoryImpl,
-    private val dailyWeatherRepository: DailyWeatherRepositoryImpl
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val hourlyDataUseCase: HourlyDataUseCase,
+    private val dailyTempDataUseCase: DailyTempDataUseCase,
+    private val dailyWeatherDataUseCase: DailyWeatherDataUseCase
 ) : ViewModel() {
     private val _hourlyList: MutableLiveData<List<HourlyDataModel>> = MutableLiveData()
     val hourlyList: LiveData<List<HourlyDataModel>> get() = _hourlyList
@@ -56,16 +62,13 @@ class HomeViewModel(
 
     private val formatter4 = DateTimeFormatter.ofPattern("MM / dd")
 
-    private val client = RetrofitClient.getInstance().create(RetrofitInterface::class.java)
-
     //날씨 데이터를 불러오고 해당 List에서 현재 기준 24시간 데이터 및 현재 날씨 정보를 불러오는 함수
     fun getHourlyWeather(
         nx: String,
         ny: String
     ) {
         viewModelScope.launch {
-            val response = hourlyRepository.getHourlyData(
-                client,
+            val response = hourlyDataUseCase(
                 500,
                 1,
                 Utils.getBaseDate(currentDateTime),
@@ -123,8 +126,7 @@ class HomeViewModel(
     fun getDailyWeather(nx: String, ny: String, tempArea: String, landArea: String) {
         viewModelScope.launch {
             val dailyWeatherList = mutableListOf<DailyDataModel>()
-            val response = hourlyRepository.getHourlyData(
-                client,
+            val response = hourlyDataUseCase(
                 900,
                 1,
                 currentDateTime.minusDays(1).format(formatter2).toInt(),
@@ -175,11 +177,11 @@ class HomeViewModel(
 
             }
             
-            //3일~10일 날씨 데이터를 불러오는 코드 (임시 지역 코드, 수정 필요)
+            //3일~10일 날씨 데이터를 불러오는 코드
             val tempResponse =
-                dailyTempRepository.getDailyTempData(client, 10, 1, tempArea, getTmFc(currentTime, currentDateTime))
+                dailyTempDataUseCase(10, 1, tempArea, getTmFc(currentTime, currentDateTime))
             val weatherResponse =
-                dailyWeatherRepository.getDailyWeatherData(client, 10, 1, landArea, getTmFc(currentTime, currentDateTime))
+                dailyWeatherDataUseCase(10, 1, landArea, getTmFc(currentTime, currentDateTime))
 
             val tempList = tempResponse.body()?.response!!.body.items.item
             val weatherList = weatherResponse.body()?.response!!.body.items.item

@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("kotlin-parcelize")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -42,6 +43,9 @@ android {
         viewBinding = true
         buildConfig = true
     }
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 dependencies {
@@ -69,6 +73,8 @@ dependencies {
 
     kapt("androidx.room:room-compiler:$room_version")
 
+    implementation ("androidx.room:room-ktx:$room_version")
+
 
     // Retrofit2
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
@@ -78,7 +84,10 @@ dependencies {
     implementation ("com.google.android.gms:play-services-location:21.0.1")
 
     //Coroutine
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+    // Kotlinx Coroutines
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
 
     //로그 확인용 OkHttp
     implementation ("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2")
@@ -93,4 +102,8 @@ dependencies {
 
     //WorkManager
     implementation("androidx.work:work-runtime:2.9.0")
+
+    //Hilt
+    implementation("com.google.dagger:hilt-android:2.50")
+    kapt("com.google.dagger:hilt-compiler:2.50")
 }

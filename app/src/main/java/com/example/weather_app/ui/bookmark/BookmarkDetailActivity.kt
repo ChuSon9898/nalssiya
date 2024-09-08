@@ -16,18 +16,19 @@ import com.example.weather_app.data.room.BookmarkDatabase
 import com.example.weather_app.databinding.HomeActivityBinding
 import com.example.weather_app.ui.home.DailyListAdapter
 import com.example.weather_app.ui.home.HomeViewModel
-import com.example.weather_app.ui.home.HomeViewModelFactory
 import com.example.weather_app.ui.home.HourlyListAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class BookmarkDetailActivity : AppCompatActivity() {
     private lateinit var binding: HomeActivityBinding
 
-    private val homeViewModel: HomeViewModel by viewModels {
-        HomeViewModelFactory()
-    }
+    private val homeViewModel: HomeViewModel by viewModels()
+
+    private val bookmarkViewModel : BookmarkViewModel by viewModels()
 
     private val hourlyAdapter by lazy {
         HourlyListAdapter()
@@ -36,7 +37,6 @@ class BookmarkDetailActivity : AppCompatActivity() {
         DailyListAdapter()
     }
 
-    private val db = BookmarkDatabase.getDatabase(this)
 
     companion object {
         const val OBJECT_DATA = "item_object"
@@ -80,8 +80,7 @@ class BookmarkDetailActivity : AppCompatActivity() {
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-
-            val addBookmark = BookmarkRepositoryImpl().getDataByLocation(db,item!!.Gu + " " + item!!.Dong)
+            val addBookmark = bookmarkViewModel.getDataByLocation(item!!)
 
             if(addBookmark.isNotEmpty()){
                 tvAdd.visibility = View.INVISIBLE
